@@ -1,0 +1,6 @@
+%% -*- mode: erlang -*-
+[
+    {home,      [],	controller_template,  	[ {template, "home.tpl"} ]},
+    {ws,      ["ws"],	controller_websocket,  	[ {ws_handler, smd_ws_handler} ]}
+].
+
