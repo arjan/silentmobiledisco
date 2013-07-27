@@ -20,12 +20,16 @@
                 
                 <div ng-switch-when="playing">
                     Now playing: [[ title ]]
+
+                    
                     <button ng-click="song_end()">Song end</button>
                 </div>
                 
             </div>
+
+            <div><audio id="player" controls /></div>
             
-            <audio id="player" style="height: 1px" />
+            {#            <audio id="player" style="height: 1px" />#}
             
         </div>
     </div>
