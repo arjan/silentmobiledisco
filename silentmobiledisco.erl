@@ -30,7 +30,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 -export([start_link/1]).
 
--export([client_added/2, client_removed/2, set_waiting/2]).
+-export([client_added/2, client_removed/2, set_waiting/2, buffering_done/2]).
 
 -record(clientstate, {status, play_id, connected_to}).
 
@@ -59,6 +59,9 @@ client_removed(Pid, Context) ->
 
 set_waiting(Pid, Context) ->
     gen_server:call(name(Context), {set_waiting, Pid}).
+
+buffering_done(Pid, Context) ->
+    gen_server:call(name(Context), {buffering_done, Pid}).
 
 
 %%====================================================================
@@ -90,6 +93,11 @@ handle_call({client_removed, Pid}, _From, State) ->
 
 handle_call({set_waiting, Pid}, _From, State) ->
     State1 = set_client_waiting(Pid, State),
+    report_state(State1),
+    {reply, ok, State1};
+
+handle_call({buffering_done, Pid}, _From, State) ->
+    State1 = set_buffering_done(Pid, State),
     report_state(State1),
     {reply, ok, State1};
 
@@ -136,7 +144,7 @@ set_client_waiting(Pid,State=#state{clients=C, context=Context}) ->
         waiting ->
             %% no change
             State;
-        playing ->
+        S when S =:= buffering; S =:= playing ->
             %% set waiting, and set other client also waiting
             Clients1 = set_waiting(Pid, C, Context),
             Clients2 = set_waiting(ClientState#clientstate.connected_to, Clients1, Context),
@@ -158,7 +166,7 @@ remove_client(Pid,State=#state{clients=Clients, context=Context}) ->
                            waiting ->
                                %% no other client connected
                                Clients1;
-                           playing ->
+                           S when S =:= buffering; S =:= playing ->
                                set_waiting(ClientState#clientstate.connected_to, Clients1, Context)
                        end,
             Clients3 = try_pair(Clients2, Context),
@@ -167,15 +175,34 @@ remove_client(Pid,State=#state{clients=Clients, context=Context}) ->
             State
     end.
 
+set_buffering_done(Pid, State=#state{clients=Clients, context=Context}) ->
+    {ok, CS} = orddict:find(Pid, Clients),
+    CS1 = CS#clientstate{
+            status=playing
+           },
+    Clients1 = orddict:store(Pid, CS1, Clients),
+    {ok, OtherCS} = orddict:find(CS1#clientstate.connected_to, Clients1),
+
+    case OtherCS#clientstate.status of
+        playing ->
+            %% send to both at same time, causing synchronized playback
+            send_client_state(Pid, CS1, Context),
+            send_client_state(CS1#clientstate.connected_to, OtherCS, Context);
+        buffering ->
+            nop
+    end,
+    State#state{clients=Clients1}.
+
 name(Context) ->
     z_utils:name_for_host(?MODULE, z_context:site(Context)).
 
 send_client_state(Pid, S, Context) ->
     controller_websocket:websocket_send_data(Pid, encode_client_state(S, Context)).
 
-encode_client_state(#clientstate{status=playing, play_id=Id}, Context) ->
+
+encode_client_state(#clientstate{status=buffering, play_id=Id}, Context) ->
     M = m_media:get(Id, Context),
-    mochijson:encode({struct, [{status, playing},
+    mochijson:encode({struct, [{status, buffering},
                                {title, z_trans:trans(m_rsc:p(Id, title, Context), Context)},
                                {filename, proplists:get_value(filename, M)}
                               ]});
@@ -189,8 +216,8 @@ try_pair(Clients, Context) ->
             %% find random song
             Id = find_random(Context),
             %% set both clients to playing
-            Clients1 = set_playing(A, B, Id, Clients, Context),
-            Clients2 = set_playing(B, A, Id, Clients1, Context),
+            Clients1 = set_buffering(A, B, Id, Clients, Context),
+            Clients2 = set_buffering(B, A, Id, Clients1, Context),
             Clients2;
         {_, _} ->
             Clients
@@ -208,10 +235,10 @@ find_pair(Clients) ->
       {undefined, undefined},
       Clients).
 
-set_playing(Pid, OtherPid, Id, Clients, Context) ->
+set_buffering(Pid, OtherPid, Id, Clients, Context) ->
     {ok, State} = orddict:find(Pid, Clients),
     State1 = State#clientstate{
-               status=playing,
+               status=buffering,
                play_id=Id,
                connected_to=OtherPid
               },
@@ -229,20 +256,23 @@ set_waiting(Pid, Clients, Context) ->
     send_client_state(Pid, State1, Context),
     orddict:store(Pid, State1, Clients).
 
+
+
               
 find_random(Context) ->
     hd(z_search:query_([{cat, audio}, {sort, "random"}], Context)).
 
 
 report_state(#state{clients=Clients}) ->
-    {Waiting, Playing} = lists:foldl(
-                           fun({_, #clientstate{status=waiting}}, {W, P}) ->
-                                   {W+1, P};
-                              ({_, #clientstate{status=playing}}, {W, P}) ->
-                                   {W, P+1}
-                           end,
-                           {0, 0},
-                           Clients),
-    lager:warning("~p clients, waiting: ~p, playing: ~p", [length(Clients), Waiting, Playing]).
-
-                              
+    {Waiting, Buffering, Playing} =
+        lists:foldl(
+          fun({_, #clientstate{status=waiting}}, {W, B, P}) ->
+                  {W+1, B, P};
+             ({_, #clientstate{status=buffering}}, {W, B, P}) ->
+                  {W, B+1, P};
+             ({_, #clientstate{status=playing}}, {W, B, P}) ->
+                  {W, B, P+1}
+             end,
+             {0, 0, 0},
+          Clients),
+    lager:warning("~p clients, waiting: ~p, buffering: ~p, playing: ~p", [length(Clients), Waiting, Buffering, Playing]).
