@@ -1,6 +1,7 @@
 %% -*- mode: erlang -*-
 [
-    {home,      [],	controller_template,  	[ {template, "home.tpl"} ]},
-    {ws,      ["ws"],	controller_websocket,  	[ {ws_handler, smd_ws_handler} ]}
+ {home,      [],	controller_template,  	[ {template, "home.tpl"} ]},
+ {ws,      ["ws"],	controller_websocket,  	[ {ws_handler, smd_ws_handler} ]},
+ {views, ["views", '*'], controller_static_pages, [{root, "views"}]}
 ].
 

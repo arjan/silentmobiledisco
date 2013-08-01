@@ -1,24 +1,26 @@
-<html>
+<!DOCTYPE html>
+<html ng-app="smd">
     <head>
         <title>Silent Mobile Disco</title>
 	    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
-        
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
-        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
 
         {% lib
             "js/angular.min.js"
+            "js/jquery.mobile.css.js"
+            "js/angular-mobile.js"
+            "js/angular-jqm.js"
             "js/smd.js"
         %}
-        
+        {% lib 
+            "css/smd.css"
+        %}
     </head>
+
     <body>
-        <div data-role="page">
-            {% block content %}
-            {% endblock %}
-        </div>
+        <app-init player="{{ m.session.player }}" />
+        <jqm-view></jqm-view>
     </body>
+
 </html>
 
     
