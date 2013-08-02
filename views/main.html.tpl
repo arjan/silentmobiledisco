@@ -1,4 +1,4 @@
-<div jqm-page>
+<div jqm-page ng-controller="mainCtrl">
     <div jqm-header>
         <h3>Hello, [[ player ]]</h3>
     </div>
@@ -7,5 +7,5 @@
 
     <p>Hi ther xxxxxx</p>
 
-    <button>Click</button>
+    <button ng-click="logout()">Log out</button>
 </div>

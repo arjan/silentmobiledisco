@@ -279,10 +279,12 @@ report_state(#state{clients=Clients}) ->
           Clients),
     lager:warning("~p clients, waiting: ~p, buffering: ~p, playing: ~p", [length(Clients), Waiting, Buffering, Playing]).
 
-ws_cast(foo, _Args, _Context) ->
-    lager:warning("foo: ~p", [foo]),
-    lager:warning("_Args: ~p", [_Args]),
-    ok.
+ws_cast(set_session, KeyValues, Context) ->
+    lists:foreach(
+      fun ({K, null}) -> z_context:set_session(list_to_atom(K), undefined, Context);
+          ({K, V}) -> z_context:set_session(list_to_atom(K), V, Context) 
+      end,
+      KeyValues).
 
 ws_call(rsc, [{"id", IdStr}], Context) ->
     lager:warning("IdStr: ~p", [IdStr]),
