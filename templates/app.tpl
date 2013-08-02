@@ -1,4 +1,30 @@
-{% extends "base.tpl" %}
+<!DOCTYPE html>
+<html ng-app="smd">
+    <head>
+        <title>Silent Mobile Disco</title>
+	    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+
+        {% lib
+            "js/angular.min.js"
+            "js/angular-mobile.js"
+            "js/angular-jqm.js"
+            "js/angular-zotonic.js"
+            "js/smd.js"
+        %}
+        {% lib 
+            "css/jquery.mobile.css"
+            "css/smd.css"
+        %}
+    </head>
+
+    <body>
+        <app-init player="{{ m.session.player }}" />
+        <jqm-view></jqm-view>
+    </body>
+
+</html>
+
+{#{% extends "base.tpl" %}
 
 {% block content %}
     <div data-role="header">
@@ -40,3 +66,4 @@
         
     </div>
 {% endblock %}
+#}

@@ -32,6 +32,8 @@
 
 -export([client_added/2, client_removed/2, set_waiting/2, buffering_done/2]).
 
+-export([ws_call/3, ws_cast/3]).
+
 -record(clientstate, {status, play_id, connected_to}).
 
 -record(state, {context, clients}).
@@ -276,3 +278,20 @@ report_state(#state{clients=Clients}) ->
              {0, 0, 0},
           Clients),
     lager:warning("~p clients, waiting: ~p, buffering: ~p, playing: ~p", [length(Clients), Waiting, Buffering, Playing]).
+
+ws_cast(foo, _Args, _Context) ->
+    lager:warning("foo: ~p", [foo]),
+    lager:warning("_Args: ~p", [_Args]),
+    ok.
+
+ws_call(rsc, [{"id", IdStr}], Context) ->
+    lager:warning("IdStr: ~p", [IdStr]),
+    case m_rsc:rid(IdStr, Context) of
+        undefined ->
+            error;
+        Id when is_integer(Id) ->
+            z_convert:to_json(m_rsc_export:full(Id, Context))
+    end;
+
+ws_call(Cmd, _, _) ->
+    unknown_call.
