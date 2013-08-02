@@ -30,11 +30,11 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 -export([start_link/1]).
 
--export([client_added/2, client_removed/2, set_waiting/2, buffering_done/2]).
+-export([client_removed/1]).
 
--export([ws_call/3, ws_cast/3]).
+-export([ws_call/4, ws_cast/4]).
 
--record(clientstate, {status, play_id, connected_to}).
+-record(clientstate, {status, socket, play_id, connected_to}).
 
 -record(state, {context, clients}).
 
@@ -53,17 +53,43 @@ start_link(Args) when is_list(Args) ->
     {context, Context} = proplists:lookup(context, Args),
     gen_server:start_link({local, name(Context)}, ?MODULE, Args, []).
 
-client_added(Pid, Context) ->
-    gen_server:call(name(Context), {client_added, Pid}).
 
-client_removed(Pid, Context) ->
-    gen_server:call(name(Context), {client_removed, Pid}).
+ws_cast(disco_start, [], From, Context) ->
+    lager:warning("disco start: ~p", [cookie(Context)]),
+    gen_server:call(name(Context), {client_added, cookie(Context), From});
 
-set_waiting(Pid, Context) ->
-    gen_server:call(name(Context), {set_waiting, Pid}).
+ws_cast(disco_stop, [], _From, Context) ->
+    lager:warning("disco stop: ~p", [cookie(Context)]),
+    gen_server:call(name(Context), {client_removed, cookie(Context)});
 
-buffering_done(Pid, Context) ->
-    gen_server:call(name(Context), {buffering_done, Pid}).
+ws_cast(disco_skip, [], _From, Context) ->
+    lager:warning("disco skip: ~p", [self()]),
+    gen_server:call(name(Context), {set_waiting, cookie(Context)});
+
+ws_cast(disco_buffering_done, [], _From, Context) ->
+    gen_server:call(name(Context), {buffering_done, cookie(Context)});
+
+ws_cast(set_session, KeyValues, _From, Context) ->
+    lists:foreach(
+      fun ({K, null}) -> z_context:set_session(list_to_atom(K), undefined, Context);
+          ({K, V}) -> z_context:set_session(list_to_atom(K), V, Context) 
+      end,
+      KeyValues).
+
+ws_call(rsc, [{"id", IdStr}], _From, Context) ->
+    lager:warning("IdStr: ~p", [IdStr]),
+    case m_rsc:rid(IdStr, Context) of
+        undefined ->
+            error;
+        Id when is_integer(Id) ->
+            z_convert:to_json(m_rsc_export:full(Id, Context))
+    end;
+
+ws_call(Cmd, _, _, _) ->
+    unknown_call.
+
+client_removed(Context) ->
+    gen_server:call(name(Context), {client_removed, cookie(Context)}).
 
 
 %%====================================================================
@@ -83,13 +109,13 @@ init(Args) ->
       }}.
 
 %% @doc Trap unknown calls
-handle_call({client_added, Pid}, _From, State) ->
-    State1 = add_client(Pid, State),
+handle_call({client_added, Sid, Pid}, _From, State) ->
+    State1 = add_client(Sid, Pid, State),
     report_state(State1),
     {reply, ok, State1};
 
-handle_call({client_removed, Pid}, _From, State) ->
-    State1 = remove_client(Pid, State),
+handle_call({client_removed, Sid}, _From, State) ->
+    State1 = remove_client(Sid, State),
     report_state(State1),
     {reply, ok, State1};
 
@@ -153,17 +179,17 @@ set_client_waiting(Pid,State=#state{clients=C, context=Context}) ->
             State#state{clients=Clients2}
     end.
 
-add_client(Pid,State=#state{clients=C, context=Context}) ->
-    S = #clientstate{status=waiting},
-    NewClients = orddict:store(Pid, S, C),
+add_client(Sid,Pid,State=#state{clients=C, context=Context}) ->
+    S = #clientstate{status=waiting,socket=Pid},
+    NewClients = orddict:store(Sid, S, C),
     send_client_state(Pid, S, Context),
     NewClients1 = try_pair(NewClients, Context),
     State#state{clients=NewClients1}.
 
-remove_client(Pid,State=#state{clients=Clients, context=Context}) ->
-    case orddict:find(Pid, Clients) of
+remove_client(Sid,State=#state{clients=Clients, context=Context}) ->
+    case orddict:find(Sid, Clients) of
         {ok, ClientState} ->        
-            Clients1 = orddict:erase(Pid, Clients),
+            Clients1 = orddict:erase(Sid, Clients),
             Clients2 = case ClientState#clientstate.status of
                            waiting ->
                                %% no other client connected
@@ -177,19 +203,19 @@ remove_client(Pid,State=#state{clients=Clients, context=Context}) ->
             State
     end.
 
-set_buffering_done(Pid, State=#state{clients=Clients, context=Context}) ->
-    {ok, CS} = orddict:find(Pid, Clients),
+set_buffering_done(Sid, State=#state{clients=Clients, context=Context}) ->
+    {ok, CS} = orddict:find(Sid, Clients),
     CS1 = CS#clientstate{
             status=playing
            },
-    Clients1 = orddict:store(Pid, CS1, Clients),
+    Clients1 = orddict:store(Sid, CS1, Clients),
     {ok, OtherCS} = orddict:find(CS1#clientstate.connected_to, Clients1),
 
     case OtherCS#clientstate.status of
         playing ->
             %% send to both at same time, causing synchronized playback
-            send_client_state(Pid, CS1, Context),
-            send_client_state(CS1#clientstate.connected_to, OtherCS, Context);
+            send_client_state(CS1#clientstate.socket, CS1, Context),
+            send_client_state(OtherCS#clientstate.socket, OtherCS, Context);
         buffering ->
             nop
     end,
@@ -214,7 +240,7 @@ encode_client_state(#clientstate{status=S}, _) ->
 
 try_pair(Clients, Context) ->
     case find_pair(Clients) of
-        {A, B} when is_pid(A) andalso is_pid(B) ->
+        {A, B} when A =/= undefined andalso B =/= undefined ->
             %% find random song
             Id = find_random(Context),
             %% set both clients to playing
@@ -237,28 +263,26 @@ find_pair(Clients) ->
       {undefined, undefined},
       Clients).
 
-set_buffering(Pid, OtherPid, Id, Clients, Context) ->
-    {ok, State} = orddict:find(Pid, Clients),
+set_buffering(Sid, OtherSid, Id, Clients, Context) ->
+    {ok, State} = orddict:find(Sid, Clients),
     State1 = State#clientstate{
                status=buffering,
                play_id=Id,
-               connected_to=OtherPid
+               connected_to=OtherSid
               },
-    send_client_state(Pid, State1, Context),
-    orddict:store(Pid, State1, Clients).
+    send_client_state(State#clientstate.socket, State1, Context),
+    orddict:store(Sid, State1, Clients).
 
 
-set_waiting(Pid, Clients, Context) ->
-    {ok, State} = orddict:find(Pid, Clients),
+set_waiting(Sid, Clients, Context) ->
+    {ok, State} = orddict:find(Sid, Clients),
     State1 = State#clientstate{
                status=waiting,
                play_id=undefined,
                connected_to=undefined
               },
-    send_client_state(Pid, State1, Context),
-    orddict:store(Pid, State1, Clients).
-
-
+    send_client_state(State#clientstate.socket, State1, Context),
+    orddict:store(Sid, State1, Clients).
 
               
 find_random(Context) ->
@@ -279,21 +303,5 @@ report_state(#state{clients=Clients}) ->
           Clients),
     lager:warning("~p clients, waiting: ~p, buffering: ~p, playing: ~p", [length(Clients), Waiting, Buffering, Playing]).
 
-ws_cast(set_session, KeyValues, Context) ->
-    lists:foreach(
-      fun ({K, null}) -> z_context:set_session(list_to_atom(K), undefined, Context);
-          ({K, V}) -> z_context:set_session(list_to_atom(K), V, Context) 
-      end,
-      KeyValues).
-
-ws_call(rsc, [{"id", IdStr}], Context) ->
-    lager:warning("IdStr: ~p", [IdStr]),
-    case m_rsc:rid(IdStr, Context) of
-        undefined ->
-            error;
-        Id when is_integer(Id) ->
-            z_convert:to_json(m_rsc_export:full(Id, Context))
-    end;
-
-ws_call(Cmd, _, _) ->
-    unknown_call.
+cookie(Context) ->
+    z_context:get_cookie("z_sid", Context).

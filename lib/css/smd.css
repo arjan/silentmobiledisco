@@ -6,3 +6,21 @@
     padding: 20px;
 }
 
+.ui-content.jqm-content-with-header {
+    margin: 0;
+}
+
+button {
+    background: #5B89C3;
+    color: white;
+    font-size: 14px;
+    border: 0;
+    border-radius: 5px;
+    padding: 10px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.ui-header button {
+    padding: 5px 10px;
+    margin: 8px;
+}
