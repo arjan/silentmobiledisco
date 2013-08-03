@@ -2,7 +2,7 @@
     <div jqm-header>
         {#<button style="float: left" ng-click="show_code()">Show my secret code</button>#}
         <button class="secondary" style="float:right" ng-click="logout()">Log out</button>
-        <h3>Hello, [[ player ]]</h3>
+        <h3>Hello, [[ name ]]</h3>
     </div>
 
     <p><b>My score: [[ score ]]</b></p>

@@ -18,7 +18,7 @@
     </head>
 
     <body>
-        <app-init player="{{ m.session.player }}" />
+        <app-init />
         <jqm-view></jqm-view>
     </body>
 

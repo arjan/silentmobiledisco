@@ -7,21 +7,9 @@
 
 %% @doc Called when the websocket is initialized.
 websocket_init(Context) ->
+    Handler = z_context:get(callbacks, Context),
+    Handler:ws_opened(self(), Context),
     ok.
-
-%% @doc Called when a message arrives on the websocket.
-websocket_message(<<"stop">>, From, Context) ->
-    silentmobiledisco:set_waiting(From, Context),
-    ok;
-
-%% @doc Called when a message arrives on the websocket.
-websocket_message(<<"buffering_done">>, From, Context) ->
-    silentmobiledisco:buffering_done(From, Context),
-    ok;
-
-websocket_message(<<"pos ", T/binary>>, From, Context) ->
-    silentmobiledisco:set_current_time(From, z_convert:to_float(T), Context),
-    ok;
 
 websocket_message(<<"call:", ReplyId:8/binary, ":", Call/binary>>, From, Context) ->
     [CmdBin, PayloadBin] = binary:split(Call, <<":">>),
