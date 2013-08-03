@@ -9,7 +9,7 @@
         <div ng-show="secret_code" class="right">My code: [[ secret_code ]]</div>
         <b>My score: [[ score ]]</b>
     </p>
-    [[ status ]]
+
     <div ng-switch="status">
 
         <div ng-switch-when="waiting">
@@ -22,6 +22,8 @@
         
         <div ng-switch-when="playing">
             <p>Now playing: [[ title ]]</p>
+            
+            <p>[[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]</p>
 
             <div class="buttons">
                 <button class="secondary" ng-click="song_end()">This song is boring…</button>

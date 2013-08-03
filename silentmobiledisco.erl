@@ -65,6 +65,9 @@ ws_cast(disco_attach_highscores, [], From, Context) ->
     z_notifier:notify({disco_highscores, m_disco_log:highscores(Context)}, Context),
     nop;
 
+ws_cast(disco_song_end, [], _From, Context) ->
+    next_song(player_id(Context), Context);
+
 ws_cast(disco_skip, [], _From, Context) ->
     skip_song(player_id(Context), Context).
 
@@ -201,5 +204,10 @@ skip_song(Player, Context) ->
     find_waiting(Player, Context),
     ok.
     
-    
-    
+
+next_song(Player, Context) ->
+    log("disco_next", [{player_id, Player}, {score, 1}], Context),
+    m_disco_player:set(Player, [{status, waiting}, {connected_to, undefined}], Context),
+    send_player_state(Player, Context),
+    find_waiting(Player, Context),
+    ok.
