@@ -75,7 +75,6 @@ find_and_connect(PlayerId, SongId, Context) ->
                   undefined ->
                       undefined;
                   PlayerB ->
-                      lager:warning("PlayerB: ~p", [PlayerB]),
                       connect(PlayerId, PlayerB, SongId, C),
                       PlayerB
               end

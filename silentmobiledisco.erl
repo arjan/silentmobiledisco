@@ -35,7 +35,6 @@
 
 ws_cast(disco_start, [{"name", Name}], From, Context) ->
     Player = player_id(Context),
-    lager:warning("disco start: ~p", [Name]),
     m_disco_player:insert(
       Player,
       [{connected, true},
@@ -106,7 +105,6 @@ ws_call(Cmd, _, _, _) ->
     unknown_call.
 
 ws_opened(_From, Context) ->
-    lager:warning("_From: ~p", [_From]),
     ok.
 
 ws_closed(_From, Context) ->
@@ -125,7 +123,6 @@ send_player_state(PlayerId, Context) ->
     WS = proplists:get_value(ws, Player),
     case is_pid(WS) andalso proplists:get_value(connected, Player) =:= true of
         true ->
-lager:warning("aaaa: ~p", [aaaa]),
             controller_websocket:websocket_send_data(WS, mochijson:encode(encode_player_json(Player, Context)));
         false ->
             nop

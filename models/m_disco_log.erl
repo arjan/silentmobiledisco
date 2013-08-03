@@ -34,7 +34,6 @@ add(EventType, Props, Context) ->
     z_db:insert(?table, [{event, EventType}, {time, calendar:local_time()}|Props], Context),
     case proplists:lookup(score, Props) of
         {score, _} ->
-            lager:warning("sending highscores"),
             z_notifier:notify({disco_highscores, highscores(Context)}, Context);
         _ ->
             ok

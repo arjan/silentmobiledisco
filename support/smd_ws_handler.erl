@@ -39,9 +39,7 @@ websocket_info({'$gen_cast',{{Message, Arguments}, _}}, _Context) ->
     controller_websocket:websocket_send_data(self(), mochijson:encode(JSON));
 
 websocket_info(Msg, _Context) ->
-    lager:warning("info: ~p", [Msg]),
-
-
+    lager:warning("Unhandled incoming INFO: ~p", [Msg]),
     ok.
 
 %% @doc Called when the websocket terminates.
