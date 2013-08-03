@@ -52,5 +52,6 @@ websocket_info(Msg, _Context) ->
 
 %% @doc Called when the websocket terminates.
 websocket_terminate(_Reason, Context) ->
-    silentmobiledisco:client_removed(Context),
+    Handler = z_context:get(callbacks, Context),
+    Handler:ws_closed(self(), Context),
     ok.

@@ -30,11 +30,9 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 -export([start_link/1]).
 
--export([client_removed/1]).
+-export([ws_call/4, ws_cast/4, ws_closed/2]).
 
--export([ws_call/4, ws_cast/4]).
-
--record(clientstate, {status, socket, play_id, connected_to}).
+-record(clientstate, {status, socket, play_id, connected_to, secret_code, score}).
 
 -record(state, {context, clients}).
 
@@ -64,7 +62,7 @@ ws_cast(disco_stop, [], _From, Context) ->
 
 ws_cast(disco_skip, [], _From, Context) ->
     lager:warning("disco skip: ~p", [self()]),
-    gen_server:call(name(Context), {set_waiting, cookie(Context)});
+    gen_server:call(name(Context), {disco_skip, cookie(Context)});
 
 ws_cast(disco_buffering_done, [], _From, Context) ->
     gen_server:call(name(Context), {buffering_done, cookie(Context)});
@@ -85,10 +83,13 @@ ws_call(rsc, [{"id", IdStr}], _From, Context) ->
             z_convert:to_json(m_rsc_export:full(Id, Context))
     end;
 
+ws_call(disco_guess, [{"code", Code}], _, Context) ->
+    gen_server:call(name(Context), {disco_guess, cookie(Context), Code});
+
 ws_call(Cmd, _, _, _) ->
     unknown_call.
 
-client_removed(Context) ->
+ws_closed(_From, Context) ->
     gen_server:call(name(Context), {client_removed, cookie(Context)}).
 
 
@@ -103,6 +104,8 @@ client_removed(Context) ->
 %% @doc Initiates the server.
 init(Args) ->
     {context, Context} = proplists:lookup(context, Args),
+    m_disco_player:init(Context),
+    m_disco_log:init(Context),
     {ok, #state{
        context=z_context:new(Context),
        clients=orddict:new()
@@ -119,8 +122,8 @@ handle_call({client_removed, Sid}, _From, State) ->
     report_state(State1),
     {reply, ok, State1};
 
-handle_call({set_waiting, Pid}, _From, State) ->
-    State1 = set_client_waiting(Pid, State),
+handle_call({disco_skip, Pid}, _From, State) ->
+    State1 = do_disco_skip(Pid, State),
     report_state(State1),
     {reply, ok, State1};
 
@@ -128,6 +131,10 @@ handle_call({buffering_done, Pid}, _From, State) ->
     State1 = set_buffering_done(Pid, State),
     report_state(State1),
     {reply, ok, State1};
+
+handle_call({disco_guess, Pid, Code}, _From, State) ->
+    {Reply, State1} = do_disco_guess(Pid, Code, State),
+    {reply, Reply, State1};
 
 handle_call(Message, _From, State) ->
     {stop, {unknown_call, Message}, State}.
@@ -166,7 +173,7 @@ code_change(_OldVsn, State, _Extra) ->
 
 
 
-set_client_waiting(Pid,State=#state{clients=C, context=Context}) ->
+do_disco_skip(Pid,State=#state{clients=C, context=Context}) ->
     {ok, ClientState} = orddict:find(Pid, C),
     case ClientState#clientstate.status of
         waiting ->
@@ -180,7 +187,7 @@ set_client_waiting(Pid,State=#state{clients=C, context=Context}) ->
     end.
 
 add_client(Sid,Pid,State=#state{clients=C, context=Context}) ->
-    S = #clientstate{status=waiting,socket=Pid},
+    S = #clientstate{status=waiting,socket=Pid,secret_code=secret_code(),score=0},
     NewClients = orddict:store(Sid, S, C),
     send_client_state(Pid, S, Context),
     NewClients1 = try_pair(NewClients, Context),
@@ -235,8 +242,8 @@ encode_client_state(#clientstate{status=buffering, play_id=Id}, Context) ->
                                {filename, proplists:get_value(filename, M)}
                               ]});
 
-encode_client_state(#clientstate{status=S}, _) ->
-    mochijson:encode({struct, [{status, S}]}).
+encode_client_state(#clientstate{status=S, secret_code=C, score=Score}, _) ->
+    mochijson:encode({struct, [{status, S}, {secret_code, C}, {score, Score}]}).
 
 try_pair(Clients, Context) ->
     case find_pair(Clients) of
@@ -305,3 +312,16 @@ report_state(#state{clients=Clients}) ->
 
 cookie(Context) ->
     z_context:get_cookie("z_sid", Context).
+
+secret_code() ->
+    [$0+random:uniform(9) || _ <- lists:seq(1,4)].
+
+do_disco_guess(Pid, Code, State=#state{clients=Clients}) ->
+    CS = proplists:get_value(Pid, Clients),
+    OtherCS = proplists:get_value(CS#clientstate.connected_to, Clients),
+    case Code =:= OtherCS#clientstate.secret_code of
+        true ->
+            {"you got it!!!", State};
+        false ->
+            {"error", State}
+    end.

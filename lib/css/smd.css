@@ -18,9 +18,23 @@ button {
     border-radius: 5px;
     padding: 10px 18px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    margin-bottom: 8px;
 }
 
 .ui-header button {
     padding: 5px 10px;
     margin: 8px;
+}
+
+button.secondary {
+    background: #999977;
+}
+
+div.buttons {
+    display: -webkit-flex;
+    -webkit-flex-direction: horizontal;
+}
+
+div.buttons button {
+    -webkit-flex: 1;
 }
