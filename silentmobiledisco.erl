@@ -45,7 +45,7 @@ ws_cast(disco_start, [{"name", Name}], From, Context) ->
        {name, Name}],
       Context),
 
-    log("disco_start", [{player_id, Player}], Context),
+    log("disco_start", [{player_id, Player}, {score, 0}], Context),
     find_waiting(Player, Context),
     ok;
 
@@ -185,7 +185,10 @@ player_stop(Context) ->
         undefined -> nop;
         B -> 
             m_disco_player:set(B, [{status, waiting}, {connected_to, undefined}], Context),
-            find_waiting(B, Context)
+            case m_disco_player:get(B, connected, Context) of
+                true -> find_waiting(B, Context);
+                false -> nop
+            end
     end,
     m_disco_player:set(PlayerId, connected, false, Context),
     log("disco_stop", [{player_id, PlayerId}], Context).    
@@ -199,7 +202,7 @@ skip_song(Player, Context) ->
     m_disco_player:set(Other, [{status, waiting}, {connected_to, undefined}], Context),
     send_player_state(Player, Context),
     send_player_state(Other, Context),
-    
+    find_waiting(Player, Context),
     ok.
     
     

@@ -9,9 +9,7 @@
         <div ng-show="secret_code" class="right">My code: [[ secret_code ]]</div>
         <b>My score: [[ score ]]</b>
     </p>
-
-    <p>connected to [[ connected_player.name ]]</p>
-    
+    [[ status ]]
     <div ng-switch="status">
 
         <div ng-switch-when="waiting">
@@ -27,7 +25,8 @@
 
             <div class="buttons">
                 <button class="secondary" ng-click="song_end()">This song is boring…</button>
-                <button ng-show="!!!has_scored" ng-click="enter_code()">I found my dancing partner!</button>
+                <button ng-show="!has_scored" ng-click="enter_code()">I found my dancing partner!</button>
+                <p ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
             </div>
         </div>
         

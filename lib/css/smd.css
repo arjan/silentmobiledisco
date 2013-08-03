@@ -38,6 +38,7 @@ div.buttons {
     flex-flow: row;
 }
 
+div.buttons p,
 div.buttons button {
     -webkit-flex: 1 1 auto;
     flex: 1 1 auto;
@@ -46,4 +47,13 @@ div.buttons button {
 
 .right {
     float: right;
+}
+
+
+table.highscores {
+    width: 100%;
+}
+
+table.highscores th {
+    text-align: left;
 }

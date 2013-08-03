@@ -75,6 +75,7 @@ find_and_connect(PlayerId, SongId, Context) ->
                   undefined ->
                       undefined;
                   PlayerB ->
+                      lager:warning("PlayerB: ~p", [PlayerB]),
                       connect(PlayerId, PlayerB, SongId, C),
                       PlayerB
               end
@@ -82,7 +83,7 @@ find_and_connect(PlayerId, SongId, Context) ->
       Context).
 
 find_waiting(PlayerId, Context) ->
-    z_db:q1("SELECT id FROM disco_player WHERE id != $1 AND status = 'waiting' ORDER BY random() LIMIT 1",
+    z_db:q1("SELECT id FROM disco_player WHERE id != $1 AND (last_connected_to IS NULL OR last_connected_to != $1) AND status = 'waiting' and connected=true ORDER BY random() LIMIT 1",
             [PlayerId], Context).
 
 connect(PlayerA, PlayerB, SongId, Context) ->
@@ -94,4 +95,7 @@ connect(PlayerA, PlayerB, SongId, Context) ->
                   {connected_to, PlayerA},
                   {last_connected_to, PlayerA},
                   {song_id, SongId}], Context),
+
+    z_db:q1("UPDATE disco_player SET last_connected_to = NULL where last_connected_to = $1 AND id != $2", [PlayerB, PlayerA], Context),
+    z_db:q1("UPDATE disco_player SET last_connected_to = NULL where last_connected_to = $1 AND id != $2", [PlayerA, PlayerB], Context),
     ok.
