@@ -100,11 +100,10 @@ ws_call(disco_stop, [], _From, Context) ->
     z_session:set(player_id, undefined, Context),
     ok;
 
-
-ws_call(Cmd, _, _, _) ->
+ws_call(_Cmd, _, _, _) ->
     unknown_call.
 
-ws_opened(_From, Context) ->
+ws_opened(_From, _Context) ->
     ok.
 
 ws_closed(_From, Context) ->
