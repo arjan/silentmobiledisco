@@ -32,9 +32,18 @@ button.secondary {
 
 div.buttons {
     display: -webkit-flex;
-    -webkit-flex-direction: horizontal;
+    -webkit-flex-flow: row;
+
+    display: flex;
+    flex-flow: row;
 }
 
 div.buttons button {
-    -webkit-flex: 1;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    margin: 10px;
+}
+
+.right {
+    float: right;
 }

@@ -31,7 +31,14 @@ init(Context) ->
     ok.
 
 add(EventType, Props, Context) ->
-    z_db:insert(?table, [{event, EventType}, {time, calendar:local_time()}|Props], Context).
+    z_db:insert(?table, [{event, EventType}, {time, calendar:local_time()}|Props], Context),
+    case proplists:lookup(score, Props) of
+        {score, _} ->
+            lager:warning("sending highscores"),
+            z_notifier:notify({disco_highscores, highscores(Context)}, Context);
+        _ ->
+            ok
+    end.
 
 get_score(Id, Context) ->
     case z_db:q1("SELECT SUM(score) FROM disco_log WHERE player_id = $1", [Id], Context) of
@@ -48,5 +55,5 @@ history(Offset, Limit, Context) ->
     z_db:assoc("SELECT * FROM disco_log ORDER BY time DESC LIMIT $1 OFFSET $2", [Limit, Offset], Context).
 
 highscores(Context) ->
-    z_db:assoc("SELECT player_name, SUM(score) FROM disco_log GROUP BY player_name ORDER BY SUM(score) DESC", Context).
+    z_db:assoc("SELECT disco_player.name, SUM(score) AS score FROM disco_log JOIN disco_player ON (disco_log.player_id = disco_player.id) WHERE disco_log.score IS NOT NULL GROUP BY disco_player.name ORDER BY SUM(score) DESC", Context).
     

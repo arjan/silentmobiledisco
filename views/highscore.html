@@ -1,0 +1,16 @@
+<div jqm-page ng-controller="highscoreCtrl">
+    <div jqm-header>
+        <h3>Highscores</h3>
+    </div>
+
+    <table>
+        <tr>
+            <th>Name</th><th>Score</th>
+        </tr>
+        <tr ng-repeat="player in highscores">
+            <td>[[ player.name ]]</td>
+            <td>[[ player.score ]]</td>
+        </tr>
+    </table>
+
+</div>

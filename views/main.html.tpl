@@ -5,7 +5,12 @@
         <h3>Hello, [[ name ]]</h3>
     </div>
 
-    <p><b>My score: [[ score ]]</b></p>
+    <p>
+        <div ng-show="secret_code" class="right">My code: [[ secret_code ]]</div>
+        <b>My score: [[ score ]]</b>
+    </p>
+
+    <p>connected to [[ connected_player.name ]]</p>
     
     <div ng-switch="status">
 
@@ -22,7 +27,7 @@
 
             <div class="buttons">
                 <button class="secondary" ng-click="song_end()">This song is boring…</button>
-                <button ng-click="enter_code()">I found my dancing partner!</button>
+                <button ng-show="!!!has_scored" ng-click="enter_code()">I found my dancing partner!</button>
             </div>
         </div>
         
