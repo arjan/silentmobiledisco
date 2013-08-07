@@ -20,6 +20,8 @@
     <body>
         <app-init />
         <jqm-view></jqm-view>
+
+        <audio id="player" style="height: 1px" />
     </body>
 
 </html>

@@ -33,7 +33,5 @@
         </div>
         
     </div>
-    
-    <audio id="player" style="height: 1px" />
-    
+        
 </div>
