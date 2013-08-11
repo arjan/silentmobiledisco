@@ -6,7 +6,6 @@
 
         {% lib
             "js/angular.min.js"
-            "js/angular-mobile.js"
             "js/angular-jqm.js"
             "js/angular-zotonic.js"
             "js/smd.js"
