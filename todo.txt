@@ -1,0 +1,4 @@
+
+knop om spelen te starten voor voorkomen van click audio bug
+
+loading indicator beter maken met progress

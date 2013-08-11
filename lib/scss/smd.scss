@@ -1,0 +1,75 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background: #eee;
+    margin: 0; padding: 0;
+}
+
+div.header {
+    background: #000;
+    color: #eee;
+    padding: 4px;
+    height: 40px;
+    
+    h3 {
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    button {
+        padding: 5px 10px;
+        margin: 8px;
+    }
+}
+
+
+div.content {
+    padding: 20px;
+    p {
+        margin: 0 0 10px 0;
+    }
+    
+}    
+
+button {
+    background: #5B89C3;
+    color: white;
+    font-size: 14px;
+    border: 0;
+    border-radius: 5px;
+    padding: 10px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    margin-bottom: 8px;
+}
+
+
+button.secondary {
+    background: #999977;
+}
+
+div.buttons {
+    display: -webkit-flex;
+    -webkit-flex-flow: row;
+
+    display: flex;
+    flex-flow: row;
+}
+
+div.buttons p,
+div.buttons button {
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    margin: 10px;
+}
+
+.right {
+    float: right;
+}
+
+
+table.highscores {
+    width: 100%;
+}
+
+table.highscores th {
+    text-align: left;
+}
