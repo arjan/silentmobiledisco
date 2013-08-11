@@ -33,19 +33,24 @@
 %%====================================================================
 
 
-ws_cast(disco_start, [{"name", Name}], From, Context) ->
+ws_cast(disco_register, [{"name", Name}], From, Context) ->
     Player = player_id(Context),
     m_disco_player:insert(
       Player,
       [{connected, true},
-       {status, waiting},
+       {status, registered},
        {connected_to, undefined},
        {ws, From},
        {name, Name}],
       Context),
+    log("disco_register", [{player_id, Player}, {score, 0}], Context),
+    ok;
 
-    log("disco_start", [{player_id, Player}, {score, 0}], Context),
+ws_cast(disco_start, [], From, Context) ->
+    Player = player_id(Context),
+    m_disco_player:set(Player, [{connected, true}, {status, waiting}, {connected_to, undefined}, {ws, From}], Context),
     find_waiting(Player, Context),
+    send_player_state(player_id(Context), Context),
     ok;
 
 ws_cast(disco_buffering_done, [], _From, Context) ->
@@ -71,12 +76,16 @@ ws_cast(disco_song_end, [], _From, Context) ->
 ws_cast(disco_skip, [], _From, Context) ->
     skip_song(player_id(Context), Context).
 
+ws_call(disco_connect, [], _From, Context) ->
+    player_state(player_id(Context), Context);
 
 ws_call(disco_init, [], _From, Context) ->
-    case m_disco_player:get(player_id(Context), Context) of
+    Player = player_id(Context),
+    m_disco_player:set(Player, [{status, registered}], Context),
+    case m_disco_player:get(Player, Context) of
         {ok, []} -> null;
-        {ok, Player} ->
-            proplists:get_value(name, Player)
+        {ok, PlayerProps} ->
+            proplists:get_value(name, PlayerProps)
     end;
 
 ws_call(disco_guess, [{"code", Code}], _From, Context) ->
@@ -125,11 +134,16 @@ send_player_state(PlayerId, Context) ->
     WS = proplists:get_value(ws, Player),
     case is_pid(WS) andalso proplists:get_value(connected, Player) =:= true of
         true ->
-            controller_websocket:websocket_send_data(WS, mochijson:encode(encode_player_json(Player, Context)));
+            controller_websocket:websocket_send_data(WS, mochijson:encode(player_state(PlayerId, Context)));
         false ->
             nop
     end.
 
+player_state(PlayerId, Context) ->
+    {ok, Player} = m_disco_player:get(PlayerId, Context),
+    encode_player_json(Player, Context).
+    
+    
 encode_player_json(Player, Context) ->
     ExtraProps = case proplists:get_value(status, Player) of
                      <<"buffering">> ->

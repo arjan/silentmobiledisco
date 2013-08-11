@@ -12,12 +12,25 @@
 
     <div ng-switch="status">
 
+        <div ng-switch-when="registered">
+            <p>Click the button to start!</p>
+            <div class="buttons">
+                <button ng-click="start()">Join the disco</button>
+            </div>
+        </div>
+        
         <div ng-switch-when="waiting">
             <p>Waiting for someone else to join...</p>
         </div>
 
         <div ng-switch-when="buffering">
-            <p>Loading the track...</p>
+            <div ng-show="!bufferingDone">
+                <p>Now loading the track...</p>
+                <p>[[ percent ]]%, [[ bufferedBytes ]]B of [[ bytesTotal ]]B...</p>
+            </div>
+            <p ng-show="bufferingDone">
+                Waiting on your partner to finish loading the track...
+            </p>
         </div>
         
         <div ng-switch-when="playing">
