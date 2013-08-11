@@ -4,6 +4,16 @@ body {
   margin: 0;
   padding: 0; }
 
+input {
+  padding: 8px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  background: white;
+  display: block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
 div.header {
   background: #000;
   color: #eee;

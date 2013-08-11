@@ -1,4 +1,4 @@
-<div jqm-page ng-controller="mainCtrl">
+<div ng-controller="mainCtrl">
     <div class="header">
         {#<button style="float: left" ng-click="show_code()">Show my secret code</button>#}
         <button class="secondary" style="float:right" ng-click="logout()">Log out</button>
@@ -14,9 +14,9 @@
         <div ng-switch="status">
 
             <div ng-switch-when="registered">
-                <p>Click the button to start!</p>
+                <p>Click the button to start.</p>
                 <div class="buttons">
-                    <button ng-click="start()">Join the disco</button>
+                    <button ng-click="start()">Join the disco!</button>
                 </div>
             </div>
             
