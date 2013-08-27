@@ -19,7 +19,7 @@
         <app-init />
         <ng-view></ng-view>
 
-        <audio id="player" style="height: 1px" />
+        <audio id="player" style="height: 1px" preload="none" />
     </body>
 
 </html>
