@@ -60,7 +60,8 @@ div.buttons button {
   float: right; }
 
 table.highscores {
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 10px; }
   table.highscores th, table.highscores td {
     padding: 5px;
     border-bottom: 1px dotted #999999; }
@@ -68,3 +69,6 @@ table.highscores {
     text-align: left;
     font-weight: bold;
     border-bottom: 1px solid #999999; }
+
+p.meta {
+  color: #999; }
