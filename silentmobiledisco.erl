@@ -44,6 +44,7 @@ ws_cast(disco_register, [{"name", Name}], From, Context) ->
        {name, Name}],
       Context),
     log("disco_register", [{player_id, Player}, {score, 0}], Context),
+    broadcast_highscores(Context),
     ok;
 
 ws_cast(disco_start, [], From, Context) ->
@@ -67,7 +68,7 @@ ws_cast(disco_buffering_done, [], _From, Context) ->
 
 ws_cast(disco_attach_highscores, [], From, Context) ->
     z_notifier:observe(disco_highscores, From, Context),
-    z_notifier:notify({disco_highscores, m_disco_log:highscores(Context)}, Context),
+    broadcast_highscores(Context),
     nop;
 
 ws_cast(disco_song_end, [], _From, Context) ->
@@ -208,6 +209,7 @@ player_stop(Context) ->
             end
     end,
     m_disco_player:set(PlayerId, connected, false, Context),
+    broadcast_highscores(Context),
     log("disco_stop", [{player_id, PlayerId}], Context).    
 
 skip_song(Player, Context) ->
@@ -232,3 +234,6 @@ next_song(Player, Context) ->
         _S ->
             lager:warning("Skip next_song for player in wrong state: ~p - ~p", [Player, _S])
     end.
+
+broadcast_highscores(Context) ->
+    z_notifier:notify({disco_highscores, m_disco_log:highscores(Context)}, Context).

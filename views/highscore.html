@@ -1,17 +1,19 @@
-<div jqm-page ng-controller="highscoreCtrl">
-    <div jqm-header>
+<div ng-controller="highscoreCtrl">
+    <div class="header">
         <h3>Highscores</h3>
     </div>
 
-    <table class="highscores">
-        <tr>
-            <th>Name</th><th>Score</th><th>Online</th>
-        </tr>
-        <tr ng-repeat="player in highscores">
-            <td>[[ player.name ]]</td>
-            <td>[[ player.score ]]</td>
-            <td><span ng-show="player.connected">&#x2713;</span></td>
-        </tr>
-    </table>
-
+    <div class="content">
+        <table class="highscores">
+            <tr>
+                <th>Name</th><th>Score</th><th>Online</th>
+            </tr>
+            <tr ng-repeat="player in highscores">
+                <td>[[ player.name ]]</td>
+                <td>[[ player.score ]]</td>
+                <td><span ng-show="player.connected">&#x2713;</span></td>
+            </tr>
+        </table>
+    </div>
+    
 </div>
