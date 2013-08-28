@@ -61,6 +61,10 @@ div.buttons button {
 
 table.highscores {
   width: 100%; }
-
-table.highscores th {
-  text-align: left; }
+  table.highscores th, table.highscores td {
+    padding: 5px;
+    border-bottom: 1px dotted #999999; }
+  table.highscores th {
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 1px solid #999999; }

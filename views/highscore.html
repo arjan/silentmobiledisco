@@ -6,14 +6,15 @@
     <div class="content">
         <table class="highscores">
             <tr>
-                <th>Name</th><th>Score</th><th>Online</th>
+                <th>Name</th><th>Score</th>
             </tr>
             <tr ng-repeat="player in highscores">
-                <td>[[ player.player_name ]]</td>
+                <td>[[ player.player_name ]] <span ng-show="player.connected">&#x2713;</span></td>
                 <td>[[ player.score ]]</td>
-                <td><span ng-show="player.connected">&#x2713;</span></td>
             </tr>
         </table>
+
+        <p>&#x2713; = player online</p>
     </div>
     
 </div>
