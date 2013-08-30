@@ -1,39 +1,39 @@
-<div ng-controller="mainCtrl">
+<div ng-controller="mainCtrl" class="full-page">
     <div class="header">
         {#<button style="float: left" ng-click="show_code()">Show my secret code</button>#}
         <button class="secondary" style="float:right" ng-click="logout()">Log out</button>
-        <h3>Hello, [[ name ]]</h3>
+        <h3>[[ name ]] (score: [[ score ]])</h3>
     </div>
 
     <div class="content">
-        <p>
-            <div ng-show="secret_code" class="right">My code: [[ secret_code ]]</div>
-            <b>My score: [[ score ]]</b>
+
+        <p ng-if="secret_code">
+            <span class="right">My code: [[ secret_code ]]</span>
         </p>
 
         <div ng-switch="status">
 
             <div ng-switch-when="registered">
-                <p>Click the button to start.</p>
+                <p class="statusmsg">Click the button to start.</p>
                 <div class="buttons">
                     <button ng-click="start()">Join the disco!</button>
                 </div>
             </div>
             
             <div ng-switch-when="waiting">
-                <p>Waiting for someone else to join...</p>
-                <p><img src="/lib/images/loading.gif" /></p>
+                <p class="statusmsg">Waiting for someone else to join...</p>
+                <p class="statusmsg"><img src="/lib/images/loading.gif" /></p>
         
             </div>
 
             <div ng-switch-when="buffering">
-                <div ng-show="!bufferingDone">
-                    <p>Now loading the track...</p>
-                </div>
-                <p ng-show="bufferingDone">
+                <p ng-show="!bufferingDone" class="statusmsg">
+                    Now loading the track...
+                </p>
+                <p ng-show="bufferingDone" class="statusmsg">
                     Waiting on your partner to finish loading the track...
                 </p>
-                <p><img src="/lib/images/loading.gif" /></p>
+                <p class="statusmsg"><img src="/lib/images/loading.gif" /></p>
             </div>
             
             <div ng-switch-when="playing">
@@ -50,7 +50,7 @@
             
         </div>
 
-        <button class="secondary" style="float:right" ng-click="panic()">Panic button</button>
+        <button class="panic secondary" ng-click="panic()">Panic!</button>
         
     </div>
 </div>

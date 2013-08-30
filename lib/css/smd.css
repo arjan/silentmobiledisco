@@ -1,3 +1,13 @@
+html, body, .full-page {
+  height: 100%; }
+
+div.full-page {
+  position: relative; }
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
 body {
   font-family: Helvetica, Arial, sans-serif;
   background: #eee;
@@ -10,9 +20,7 @@ input {
   border-radius: 3px;
   background: white;
   display: block;
-  width: 100%;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box; }
+  width: 100%; }
 
 div.header {
   background: #000;
@@ -76,3 +84,11 @@ p.meta {
 p.unsupported {
   padding: 50px;
   font-size: 18px; }
+
+p.statusmsg {
+  text-align: center; }
+
+button.panic {
+  position: absolute;
+  right: 20px;
+  bottom: 20px; }

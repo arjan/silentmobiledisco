@@ -56,9 +56,10 @@ ws_cast(disco_register, [{"name", Name}, {"user_agent", UserAgent}], From, Conte
 
 ws_cast(disco_start, [], From, Context) ->
     Player = player_id(Context),
-    m_disco_player:set(Player, [{connected, true}, {status, waiting}, {connected_to, undefined}, {ws, From}], Context),
+    set_waiting(Player, Context),
+    m_disco_player:set(Player, [{connected, true}, {ws, From}], Context),
     find_waiting(Player, Context),
-    send_player_state(player_id(Context), Context),
+    send_player_state(Player, Context),
     ok;
 
 ws_cast(disco_buffering_done, [], _From, Context) ->
@@ -216,7 +217,7 @@ player_stop(PlayerId, Context) ->
     case proplists:get_value(connected_to, Player) of
         undefined -> nop;
         B -> 
-            m_disco_player:set(B, [{status, waiting}, {connected_to, undefined}], Context),
+            set_waiting(B, Context),
             case m_disco_player:get(B, connected, Context) of
                 true -> find_waiting(B, Context);
                 false -> nop
@@ -231,19 +232,22 @@ skip_song(Player, Context) ->
 
     log("disco_skip", [{player_id, Player}, {score, -1}], Context),
 
-    m_disco_player:set(Player, [{status, waiting}, {connected_to, undefined}], Context),
-    m_disco_player:set(Other, [{status, waiting}, {connected_to, undefined}], Context),
+    set_waiting(Player, Context),
+    set_waiting(Other, Context),
     send_player_state(Player, Context),
     send_player_state(Other, Context),
     find_waiting(Player, Context),
     ok.
+
+set_waiting(PlayerId, Context) ->
+    m_disco_player:set(PlayerId, [{status, waiting}, {connected_to, undefined}, {secret_code, undefined}], Context).
     
 
 next_song(Player, Context) ->
     case m_disco_player:get(Player, status, Context) of
         <<"playing">> ->
             log("disco_next", [{player_id, Player}, {score, 1}], Context),
-            m_disco_player:set(Player, [{status, waiting}, {connected_to, undefined}], Context),
+            set_waiting(Player, Context),
             send_player_state(Player, Context);
         _S ->
             lager:warning("Skip next_song for player in wrong state: ~p - ~p", [Player, _S])
