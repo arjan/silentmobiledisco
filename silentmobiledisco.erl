@@ -39,11 +39,12 @@ init(Context) ->
     end,
     ok.
 
-ws_cast(disco_register, [{"name", Name}], From, Context) ->
+ws_cast(disco_register, [{"name", Name}, {"user_agent", UserAgent}], From, Context) ->
     Player = player_id(Context),
     m_disco_player:insert(
       Player,
       [{connected, true},
+       {user_agent, UserAgent},
        {status, registered},
        {connected_to, undefined},
        {ws, From},
@@ -83,6 +84,11 @@ ws_cast(disco_song_end, [], _From, Context) ->
     next_song(Player, Context),
     next_song(Other, Context),
     find_waiting(Player, Context);
+
+ws_cast(disco_panic, [], _From, Context) ->
+    Player = player_id(Context),
+    lager:warning("Player pressed the panic button..: ~p", [Player]),
+    ok;
 
 ws_cast(disco_skip, [], _From, Context) ->
     skip_song(player_id(Context), Context).

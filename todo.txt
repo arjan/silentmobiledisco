@@ -1,7 +1,4 @@
 
-* Loading indicator / spinner als het liedje aan het laden is
-* "Panic button" die een refresh van de pagina doet
-* Oude telefoon melding dat het niet werkt
 * Melding bij de ander dat je partner het nummer heeft geskipt
 
 Optioneel; als ik tijd / zin over heb:
@@ -18,3 +15,6 @@ Zullen we de penalty voor de skip-knop groter maken?
 DONE
 
 * Multi file upload in de admin
+* Oude telefoon melding dat het niet werkt
+* Loading indicator / spinner als het liedje aan het laden is
+* "Panic button" die een refresh van de pagina doet

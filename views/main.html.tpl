@@ -49,6 +49,8 @@
             </div>
             
         </div>
+
+        <button class="secondary" style="float:right" ng-click="panic()">Panic button</button>
         
     </div>
 </div>

@@ -23,6 +23,7 @@ init(Context) ->
               [
                #column_def{name=id, type="character varying", length=32, is_nullable=false, primary_key=true},
                #column_def{name=name, type="character varying", length=255, is_nullable=true},
+               #column_def{name=user_agent, type="character varying", length=255, is_nullable=true},
                #column_def{name=secret_code, type="character varying", length=10, is_nullable=true},
                #column_def{name=status, type="character varying", length=32, is_nullable=true},
                #column_def{name=connected, type="boolean", is_nullable=true},
