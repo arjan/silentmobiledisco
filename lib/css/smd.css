@@ -72,3 +72,7 @@ table.highscores {
 
 p.meta {
   color: #999; }
+
+p.unsupported {
+  padding: 50px;
+  font-size: 18px; }

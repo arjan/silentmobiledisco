@@ -16,6 +16,8 @@
     </head>
 
     <body>
+        <p class="unsupported" ng-show="!started">We are sorry, but it seems that your web browser cannot run the Silent Mobile Disco app… :-(</p>
+        
         <app-init />
         <ng-view></ng-view>
 

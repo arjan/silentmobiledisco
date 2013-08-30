@@ -1,4 +1,20 @@
 
-knop om spelen te starten voor voorkomen van click audio bug
+* Loading indicator / spinner als het liedje aan het laden is
+* "Panic button" die een refresh van de pagina doet
+* Oude telefoon melding dat het niet werkt
+* Melding bij de ander dat je partner het nummer heeft geskipt
 
-loading indicator beter maken met progress
+Optioneel; als ik tijd / zin over heb:
+* Titel van liedje pas laten zien als je het geraden hebt
+* Tellertje met het aantal mensen op de dansvloer
+* Knop "ik wil de titel zien" - kost 2 punten
+* Volumeknop / slider
+
+Wat doen we met dat twee koppels hetzelfde liedje kunnen hebben? Zullen we dat gewoon niet toestaan? Dan moeten er altijd meer liedjes zijn dan koppels, trouwens
+
+Zullen we de penalty voor de skip-knop groter maken?
+
+
+DONE
+
+* Multi file upload in de admin
