@@ -22,6 +22,8 @@
             
             <div ng-switch-when="waiting">
                 <p>Waiting for someone else to join...</p>
+                <p><img src="/lib/images/loading.gif" /></p>
+        
             </div>
 
             <div ng-switch-when="buffering">
@@ -31,6 +33,7 @@
                 <p ng-show="bufferingDone">
                     Waiting on your partner to finish loading the track...
                 </p>
+                <p><img src="/lib/images/loading.gif" /></p>
             </div>
             
             <div ng-switch-when="playing">

@@ -25,13 +25,19 @@
 -include_lib("zotonic.hrl").
 
 %% WS exports
--export([ws_call/4, ws_cast/4, ws_opened/2, ws_closed/2]).
+-export([init/1, poll/1, ws_call/4, ws_cast/4, ws_opened/2, ws_closed/2]).
 
 
 %%====================================================================
 %% WS API
 %%====================================================================
 
+init(Context) ->
+    case whereis(disco_poller) of
+        undefined -> register(disco_poller, spawn_link(fun() -> poll(Context) end));
+        _ -> nop
+    end,
+    ok.
 
 ws_cast(disco_register, [{"name", Name}], From, Context) ->
     Player = player_id(Context),
@@ -197,7 +203,9 @@ find_waiting(Player, Context) ->
     send_player_state(Player, Context).
     
 player_stop(Context) ->
-    PlayerId = player_id(Context),
+    player_stop(player_id(Context), Context).
+
+player_stop(PlayerId, Context) ->
     {ok, Player} = m_disco_player:get(PlayerId, Context),
     case proplists:get_value(connected_to, Player) of
         undefined -> nop;
@@ -208,7 +216,7 @@ player_stop(Context) ->
                 false -> nop
             end
     end,
-    m_disco_player:set(PlayerId, connected, false, Context),
+    m_disco_player:set(PlayerId, [{ws, undefined}, {connected, false}], Context),
     broadcast_highscores(Context),
     log("disco_stop", [{player_id, PlayerId}], Context).    
 
@@ -237,3 +245,21 @@ next_song(Player, Context) ->
 
 broadcast_highscores(Context) ->
     z_notifier:notify({disco_highscores, m_disco_log:highscores(Context)}, Context).
+
+
+poll(Context) ->
+    timer:sleep(5000),
+    All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),
+    lists:foreach(fun({Id, Props}) ->
+                          case proplists:get_value(ws, Props) of
+                              undefined -> nop;
+                              P when is_pid(P) ->
+                                  case erlang:is_process_alive(P) of
+                                      true -> nop;
+                                      false ->
+                                          player_stop(Id, Context)
+                                  end
+                          end
+                  end,
+                  All),
+    ?MODULE:poll(Context).
