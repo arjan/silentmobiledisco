@@ -38,6 +38,10 @@ div.content {
   padding: 20px; }
   div.content p {
     margin: 0 0 10px 0; }
+  div.content h2 {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.5; }
 
 button {
   background: #5B89C3;

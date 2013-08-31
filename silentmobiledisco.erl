@@ -60,6 +60,7 @@ ws_cast(disco_start, [], From, Context) ->
     m_disco_player:set(Player, [{connected, true}, {ws, From}], Context),
     find_waiting(Player, Context),
     send_player_state(Player, Context),
+    send_stats_to_all_players(Context),
     ok;
 
 ws_cast(disco_buffering_done, [], _From, Context) ->
@@ -235,6 +236,7 @@ player_stop(PlayerId, Context) ->
             end
     end,
     m_disco_player:set(PlayerId, [{ws, undefined}, {connected, false}], Context),
+    send_stats_to_all_players(Context),
     broadcast_highscores(Context),
     log("disco_stop", [{player_id, PlayerId}], Context).    
 
@@ -269,6 +271,7 @@ broadcast_highscores(Context) ->
     z_notifier:notify({disco_highscores, m_disco_log:highscores(Context)}, Context).
 
 
+
 poll(Context) ->
     timer:sleep(5000),
     All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),
@@ -286,3 +289,26 @@ poll(Context) ->
                   end,
                   All),
     ?MODULE:poll(Context).
+
+player_pids(Context) ->
+    All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),
+    lists:foldl(fun({_, Props}, Acc) ->
+                        Pid = proplists:get_value(ws, Props),
+                        case is_pid(Pid) and erlang:is_process_alive(Pid) of
+                            true ->
+                                [Pid|Acc];
+                            false ->
+                                Acc
+                        end
+                end,
+                [], All).
+
+send_stats_to_all_players(Context) ->
+    Pids = player_pids(Context),
+    Count = length(Pids),
+    lists:foreach(fun(Pid) ->
+                          controller_websocket:websocket_send_data(Pid, mochijson:encode({struct, [{online_count, Count}]}))
+                  end,
+                  Pids).
+
+                          

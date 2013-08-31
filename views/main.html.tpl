@@ -1,7 +1,9 @@
 <div ng-controller="mainCtrl" class="full-page">
     <div class="header">
-        {#<button style="float: left" ng-click="show_code()">Show my secret code</button>#}
-        <button class="secondary" style="float:right" ng-click="logout()">Log out</button>
+        <span class="right">
+            <span ng-show="online_count>0">Players: [[ online_count ]]</span>
+            <button class="secondary" ng-click="logout()">Log out</button>
+        </span>
         <h3>[[ name ]] (score: [[ score ]])</h3>
     </div>
 
@@ -39,7 +41,9 @@
             </div>
             
             <div ng-switch-when="playing">
-                <p>Now playing: [[ title ]]</p>
+                <p>Let's disco!</p>
+
+                <h2>[[ title ]]</h2>
                 
                 <p>[[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]</p>
 
