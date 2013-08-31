@@ -193,7 +193,7 @@ encode_player_json(Player, Context) ->
                      <<"buffering">> ->
                          Id = proplists:get_value(song_id, Player),
                          M = m_media:get(Id, Context),
-                         [{title, z_trans:trans(m_rsc:p(Id, title, Context), Context)},
+                         [{title, z_html:unescape(z_trans:trans(m_rsc:p(Id, title, Context), Context))},
                           {filename, proplists:get_value(filename, M)}];
                      _ ->
                          []
