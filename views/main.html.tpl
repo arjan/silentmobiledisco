@@ -11,10 +11,6 @@
 
         <message-area></message-area>
         
-        <p ng-if="secret_code">
-            <span class="right">My code: [[ secret_code ]]</span>
-        </p>
-
         <div ng-switch="status">
 
             <div ng-switch-when="registered">
@@ -41,16 +37,21 @@
             </div>
             
             <div ng-switch-when="playing">
-                <p>Let's disco!</p>
+                <p>
+                    <span class="right">My code: [[ secret_code ]]</span>
+                    Let's disco!
+                </p>
 
-                <h2>[[ title ]]</h2>
+                <h2 ng-show="has_revealed">[[ title ]]</h2>
                 
                 <p>[[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]</p>
 
                 <div class="buttons">
-                    <button class="secondary" ng-click="song_end()">This song is boring…</button>
                     <button ng-show="!has_scored" ng-click="enter_code()">I found my dancing partner!</button>
                     <p ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
+                    
+                    <button class="secondary" ng-click="song_title()" ng-disabled="has_revealed">Reveal song title</button>
+                    <button class="secondary" ng-click="song_end()">This song is boring…</button>
                 </div>
             </div>
             

@@ -64,7 +64,7 @@ ws_cast(disco_start, [], From, Context) ->
     ok;
 
 ws_cast(disco_buffering_done, [], _From, Context) ->
-    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {secret_code, secret_code()}], Context),
+    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {secret_code, secret_code()}], Context),
     {ok, Other} = m_disco_player:get_other_player(player_id(Context), Context),
     case proplists:get_value(status, Other) of
         <<"playing">> ->
@@ -86,6 +86,20 @@ ws_cast(disco_song_end, [], _From, Context) ->
     next_song(Player, Context),
     next_song(Other, Context),
     find_waiting(Player, Context);
+
+ws_cast(disco_reveal_title, [], _From, Context) ->
+    Player = player_id(Context),
+    Other = m_disco_player:get(Player, connected_to, Context),
+
+    m_disco_player:set(Player, [{has_revealed, true}], Context),
+    m_disco_player:set(Other, [{has_revealed, true}], Context),
+    
+    log("disco_reveal_title", [{player_id, Player}, {score, -1}], Context),
+    
+    send_player_state(Player, Context),
+    send_player_state(Other, Context),
+    send_player_message(Other, "Your partner revealed the song title!", Context),
+    ok;
 
 ws_cast(disco_panic, [], _From, Context) ->
     Player = player_id(Context),
