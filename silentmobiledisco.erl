@@ -243,6 +243,7 @@ player_stop(PlayerId, Context) ->
     case proplists:get_value(connected_to, Player) of
         undefined -> nop;
         B -> 
+            send_player_message(B, "Your partner decided to quit, or hit the panic button..!", Context),
             set_waiting(B, Context),
             case m_disco_player:get(B, connected, Context) of
                 true -> find_waiting(B, Context);
