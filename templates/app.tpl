@@ -2,7 +2,7 @@
 <html ng-app="smd">
     <head>
         <title>Silent Mobile Disco</title>
-	    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
 
         {% lib
             "js/apps/jquery-latest.min.js"
