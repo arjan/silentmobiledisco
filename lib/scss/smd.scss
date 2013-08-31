@@ -39,7 +39,7 @@ div.header {
 
     button {
         padding: 5px 10px;
-        margin: 8px;
+        margin: 4px;
     }
 }
 
@@ -124,4 +124,18 @@ button.panic {
     position: absolute;
     right: 20px;
     bottom: 20px;
+}
+
+.message-area {
+    div {
+        color: black;
+        background: #ffff00;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    div.error {
+        color: white;
+        background: #ff0000;
+    }
 }

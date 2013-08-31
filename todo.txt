@@ -1,5 +1,6 @@
 
 * Melding bij de ander dat je partner het nummer heeft geskipt
+* Scherm is te breed op mobiel
 
 Optioneel; als ik tijd / zin over heb:
 * Titel van liedje pas laten zien als je het geraden hebt

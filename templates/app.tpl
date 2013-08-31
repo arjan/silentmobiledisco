@@ -5,6 +5,7 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
 
         {% lib
+            "js/apps/jquery-latest.min.js"
             "js/angular.min.js"
             "js/angular-zotonic.js"
             "js/smd.js"
@@ -20,8 +21,6 @@
         
         <app-init />
         <ng-view></ng-view>
-
-        <audio id="player" style="height: 1px" preload="none" />
     </body>
 
 </html>

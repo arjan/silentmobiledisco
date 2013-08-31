@@ -147,6 +147,17 @@ ws_closed(_From, Context) ->
 %%====================================================================
 
 
+send_player_message(PlayerId, Message, Context) ->
+    {ok, Player} = m_disco_player:get(PlayerId, Context),
+    WS = proplists:get_value(ws, Player),
+    case is_pid(WS) andalso proplists:get_value(connected, Player) =:= true of
+        true ->
+            controller_websocket:websocket_send_data(WS, mochijson:encode({struct, [{message, Message}]}));
+        false ->
+            nop
+    end.
+
+
 send_player_state(PlayerId, Context) ->
     {ok, Player} = m_disco_player:get(PlayerId, Context),
     WS = proplists:get_value(ws, Player),
@@ -234,6 +245,7 @@ skip_song(Player, Context) ->
 
     set_waiting(Player, Context),
     set_waiting(Other, Context),
+    send_player_message(Other, "Your partner skipped the rest of this song... :-(", Context),
     send_player_state(Player, Context),
     send_player_state(Other, Context),
     find_waiting(Player, Context),
@@ -265,7 +277,8 @@ poll(Context) ->
                               undefined -> nop;
                               P when is_pid(P) ->
                                   case erlang:is_process_alive(P) of
-                                      true -> nop;
+                                      true ->
+                                          nop;
                                       false ->
                                           player_stop(Id, Context)
                                   end

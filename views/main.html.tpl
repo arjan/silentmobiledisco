@@ -7,6 +7,8 @@
 
     <div class="content">
 
+        <message-area></message-area>
+        
         <p ng-if="secret_code">
             <span class="right">My code: [[ secret_code ]]</span>
         </p>
