@@ -1,15 +1,8 @@
+* Zorgen dat er niet mensen met hetzelfde liedje zijn die niet
+  gekoppeld kunnen worden
 
-* Scherm is te breed op mobiel
-
-Optioneel; als ik tijd / zin over heb:
+  Optioneel; als ik tijd / zin over heb:
 * Volumeknop / slider
-
-Wat doen we met dat twee koppels hetzelfde liedje kunnen hebben?
-Zullen we dat gewoon niet toestaan? Dan moeten er altijd meer liedjes
-zijn dan koppels, trouwens
-
-Zullen we de penalty voor de skip-knop groter maken?
-
 
 
 DONE

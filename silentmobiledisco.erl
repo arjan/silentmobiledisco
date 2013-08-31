@@ -258,7 +258,7 @@ player_stop(PlayerId, Context) ->
 skip_song(Player, Context) ->
     Other = m_disco_player:get(Player, connected_to, Context),
 
-    log("disco_skip", [{player_id, Player}, {score, -1}], Context),
+    log("disco_skip", [{player_id, Player}, {score, -2}], Context),
 
     set_waiting(Player, Context),
     set_waiting(Other, Context),
