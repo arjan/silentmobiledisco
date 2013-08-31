@@ -205,7 +205,16 @@ encode_player(Player) ->
     lists:map(fun({K, undefined}) -> {K, null}; (X) -> X end, proplists:delete(ws, Player)).
               
 find_random_song(_PlayerId, Context) ->
-    hd(z_search:query_([{cat, audio}, {sort, "random"}], Context)).
+    Audio = m_rsc:name_to_id_check(audio, Context),
+    All = z_db:q("select r.id from rsc r left join disco_player p on (r.id = p.song_id AND p.connected = true AND p.status = 'playing') where r.category_id = $1 AND p.song_id IS NULL order by random() limit 1", [Audio], Context),
+    case All of
+        [] ->
+            lager:warning("No free songs left...! Taking a random song."),
+            hd(z_search:query_([{cat, audio}, {sort, "random"}], Context));
+        [{Id}|_] ->
+            Id
+    end.
+
 
 player_id(Context) ->
     case z_session:get(player_id, Context) of
