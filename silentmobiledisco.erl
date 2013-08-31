@@ -129,8 +129,8 @@ ws_call(disco_guess, [{"code", Code}], _From, Context) ->
             PlayerB = proplists:get_value(id, Other),
             log("disco_score", [{player_id, Player}, {score, 10}], Context),
             log("disco_score", [{player_id, PlayerB}, {score, 10}], Context),
-            m_disco_player:set(Player, [{has_scored, true}], Context),
-            m_disco_player:set(PlayerB, [{has_scored, true}], Context),
+            m_disco_player:set(Player, [{has_scored, true}, {has_revealed, true}], Context),
+            m_disco_player:set(PlayerB, [{has_scored, true}, {has_revealed, true}], Context),
             send_player_state(Player, Context),
             send_player_state(PlayerB, Context),
             true;
