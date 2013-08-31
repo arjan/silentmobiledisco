@@ -59,6 +59,9 @@ button {
 button.secondary {
   background: #999977; }
 
+form input {
+  margin-bottom: 10px; }
+
 div.buttons button {
   width: 100%;
   margin-bottom: 10px; }
