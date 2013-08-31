@@ -1,16 +1,15 @@
 
-* Melding bij de ander dat je partner het nummer heeft geskipt
 * Scherm is te breed op mobiel
 
 Optioneel; als ik tijd / zin over heb:
-* Titel van liedje pas laten zien als je het geraden hebt
-* Tellertje met het aantal mensen op de dansvloer
-* Knop "ik wil de titel zien" - kost 2 punten
 * Volumeknop / slider
 
-Wat doen we met dat twee koppels hetzelfde liedje kunnen hebben? Zullen we dat gewoon niet toestaan? Dan moeten er altijd meer liedjes zijn dan koppels, trouwens
+Wat doen we met dat twee koppels hetzelfde liedje kunnen hebben?
+Zullen we dat gewoon niet toestaan? Dan moeten er altijd meer liedjes
+zijn dan koppels, trouwens
 
 Zullen we de penalty voor de skip-knop groter maken?
+
 
 
 DONE
@@ -19,3 +18,8 @@ DONE
 * Oude telefoon melding dat het niet werkt
 * Loading indicator / spinner als het liedje aan het laden is
 * "Panic button" die een refresh van de pagina doet
+
+* Melding bij de ander dat je partner het nummer heeft geskipt
+* Titel van liedje pas laten zien als je het geraden hebt
+* Tellertje met het aantal mensen op de dansvloer
+* Knop "ik wil de titel zien" - kost 2 punten
