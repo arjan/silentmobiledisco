@@ -43,8 +43,9 @@
                 </p>
 
                 <h2 ng-show="has_revealed">[[ title ]]</h2>
-                
-                <p>[[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]</p>
+
+                <p ng-show="getReady">Get ready...!!!</p>
+                <p ng-show="!getReady">[[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]</p>
 
                 <div class="buttons">
                     <button ng-show="!has_scored" ng-click="enter_code()">I found my dancing partner!</button>
