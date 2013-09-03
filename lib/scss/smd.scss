@@ -59,7 +59,11 @@ div.content {
     }
     p {
         line-height: 1.5;
-    }        
+    }
+    .compact-space {
+        margin-top: -3*$vpad;
+    }
+    
     p.step {
         span.nr {
             display: inline-block;
