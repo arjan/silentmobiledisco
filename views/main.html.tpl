@@ -1,29 +1,46 @@
 <div ng-controller="mainCtrl" class="full-page">
     <div class="header">
-        <span class="right">
-            <span ng-show="online_count>0">Players: [[ online_count ]]</span>
-            <button class="secondary" ng-click="logout()">Log out</button>
-        </span>
-        <h3>[[ name ]] (score: [[ score ]])</h3>
+        <h3>Silent Mobile Disco</h3>
     </div>
 
-    <div class="content">
+    <table class="meta">
+        <tr>
+            <td width="33.3%" class="l">
 
+            </td>
+            <td width="33.3%" class="m">
+
+            </td>
+            <td width="33.3%" class="r">
+                <button class="btn small" ng-click="logout()">logout</button><br />
+                [[ name ]]<br />
+                score: [[ score ]]<br />
+                <span ng-show="online_count>0">players: [[ online_count ]]</span>
+            </td>
+        </tr>
+    </table>
+    
+    <div class="content with-meta">
+        
         <message-area></message-area>
         
         <div ng-switch="status">
 
             <div ng-switch-when="registered">
-                <p class="statusmsg">Click the button to start.</p>
+                <p class="step"><span class="nr">1</span>Click Start</p>
+                <p class="step"><span class="nr">2</span>Wait for your dance partner…</p>
+                <p class="step"><span class="nr">3</span>The dancing game is on. There is only one other dancer grooving to the same tune. Find this dancer by showing your moves.</p>
+                <p class="step"><span class="nr">4</span>Exchange code with your dance partner to win points!</p>
+                
                 <div class="buttons">
-                    <button ng-click="start()">Join the disco!</button>
+                    <button class="btn full" ng-click="start()">Start</button>
                 </div>
             </div>
             
             <div ng-switch-when="waiting">
                 <p class="statusmsg">Waiting for someone else to join...</p>
                 <p class="statusmsg"><img src="/lib/images/loading.gif" /></p>
-        
+                
             </div>
 
             <div ng-switch-when="buffering">

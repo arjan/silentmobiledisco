@@ -4,12 +4,11 @@
     </div>
 
     <div class="content">
-        <p>To join the Silent Mobile Disco, please start by entering your name</p>
         
         <form name="connectForm" novalidate>
-            <input type="text" ng-model="name" placeholder="Enter your name..." autofocus required />
+            <input type="text" ng-model="name" placeholder="Enter your (disco) name…" autofocus required />
             <div class="buttons">
-                <button ng-disabled="!connectForm.$valid" ng-click="start()">Continue</button>
+                <button class="btn full" ng-disabled="!connectForm.$valid" ng-click="start()">Join disco</button>
             </div>
         </form>
     </div>

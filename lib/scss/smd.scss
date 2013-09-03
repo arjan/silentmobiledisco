@@ -1,7 +1,12 @@
 @import "typo";
 @import "grid";
 
+$xLargeFont: 32px;
 $largeFont: 26px;
+$mediumFont: 18px;
+$smallFont: 12px;
+
+$vpad: 12px;
 
 body {
     font-family: Graphik, sans-serif;
@@ -10,25 +15,18 @@ body {
     margin: 0; padding: 0;
 }
 
-input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    background: white;
-    display: block;
-    width: 100%;
-}
 
 div.header {
     background: #000;
     color: #fff;
     height: 80px;
-    
+    text-align: center; 
     h3 {
-        width: 350px;
-        margin: auto;
         
-        background: #000 url(/lib/images/logo.png) no-repeat top left;
+        display: inline-block;
+        margin: 0 auto;
+        
+        background: url(/lib/images/logo.png) no-repeat top left;
         background-size: 40px 40px;
         background-position: 0 20px;
         line-height: 1;
@@ -38,58 +36,92 @@ div.header {
         font-weight: 900;
         padding-top: 25px;
     }
-
-    button {
-        padding: 5px 10px;
-        margin: 4px;
-    }
 }
 
 
 div.content {
-    padding: 20px;
+    padding: 3*$vpad;
+    &.with-meta {
+        padding-top: 0;
+    }
+    
+    form {
+        input {
+            font-size: $mediumFont;
+            padding: 12px 8px;
+            border: 2px solid #000;
+            border-radius: 3px;
+            background: white;
+            display: block;
+            width: 100%;
+            margin-bottom: $vpad;
+        }
+    }
     p {
-        margin: 0 0 10px 0;
+        line-height: 1.5;
+    }        
+    p.step {
+        span.nr {
+            display: inline-block;
+            margin-top: 16px;
+            vertical-align: -10%;
+            margin-bottom: -10px;
+            padding-left: 3*$vpad;
+            font-family: 'Graphik', sans-serif;
+            font-weight: 900;
+            font-size: $xLargeFont;
+        }
+        text-indent: -$vpad*3;
+        margin-left: $vpad*3;
     }
 
-    h2 {
-        font-size: 18px;
-        font-weight: bold;
-        line-height: 1.5;
-        margin-bottom: 10px;
+    div.buttons {
+        margin-top: $vpad;
     }
 }    
 
-button {
-    background: #5B89C3;
-    color: white;
-    font-size: 14px;
+
+.btn {
+    font-family: Graphik, sans-serif;
+    font-size: $mediumFont;
+    background: #000;
+    color: #fff;
     border: 0;
-    border-radius: 5px;
-    padding: 10px 18px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-    margin-bottom: 8px;
+
+    &.small {
+        padding: $vpad/3 $vpad/2;
+        font-size: $smallFont;
+        font-weight: 700;
+    }
+    
+    &.full {
+    font-weight: 900;
+        padding: $vpad 0.66*$vpad;
+        width: 100%;
+        font-size: $largeFont;
+    }
 
     &:disabled {
         opacity: 0.7;
     }
 }
 
-
-button.secondary {
-    background: #999977;
-}
-
-form input {
-    margin-bottom: 10px;
-}
-
-div.buttons {
-    button {
-        width: 100%;
-        margin-bottom: 10px;
+table.meta {
+    width: 100%;
+    td {
+        padding: $vpad/2;
+        .btn {
+            margin-bottom: $vpad/2;
+        }
+    }
+    td.m {
+        text-align: center;
+    }
+    td.r {
+        text-align: right;
     }
 }
+
 
 .right {
     float: right;
