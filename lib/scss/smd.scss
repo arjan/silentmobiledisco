@@ -59,6 +59,9 @@ div.content {
     }
     p {
         line-height: 1.5;
+        span.big {
+            font-size: $xLargeFont;
+        }
     }
     .compact-space {
         margin-top: -3*$vpad;
@@ -79,8 +82,18 @@ div.content {
         margin-bottom: $vpad;
     }
 
+    p.statusmsg {
+        text-align: center;
+        margin-bottom: $vpad;
+        &.small {
+            font-size: $smallFont;
+        }
+    }
+    
     div.buttons {
-        //margin-top: $vpad;
+        &.space-above {
+            margin-top: 4*$vpad;
+        }
     }
 }    
 
@@ -160,14 +173,12 @@ p.unsupported {
     font-size: 18px;
 }
 
-p.statusmsg {
-    text-align: center;
-}
 
 button.panic {
     position: absolute;
-    right: 20px;
-    bottom: 20px;
+    right: 0px;
+    bottom: 0px;
+    background: #000;
 }
 
 .message-area {

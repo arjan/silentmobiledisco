@@ -81,6 +81,8 @@ div.content {
     margin-bottom: 12px; }
   div.content p {
     line-height: 1.5; }
+    div.content p span.big {
+      font-size: 32px; }
   div.content .compact-space {
     margin-top: -36px; }
   div.content p.step {
@@ -95,6 +97,13 @@ div.content {
       font-family: "Graphik", sans-serif;
       font-weight: 900;
       font-size: 32px; }
+  div.content p.statusmsg {
+    text-align: center;
+    margin-bottom: 12px; }
+    div.content p.statusmsg.small {
+      font-size: 12px; }
+  div.content div.buttons.space-above {
+    margin-top: 48px; }
 
 .btn {
   font-family: Graphik, sans-serif;
@@ -146,13 +155,11 @@ p.unsupported {
   padding: 50px;
   font-size: 18px; }
 
-p.statusmsg {
-  text-align: center; }
-
 button.panic {
   position: absolute;
-  right: 20px;
-  bottom: 20px; }
+  right: 0px;
+  bottom: 0px;
+  background: #000; }
 
 .message-area div {
   color: black;
