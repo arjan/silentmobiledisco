@@ -1,18 +1,11 @@
-html, body, .full-page {
-    height: 100%;
-}
+@import "typo";
+@import "grid";
 
-div.full-page {
-    position: relative;
-}
-
-* {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
+$largeFont: 26px;
 
 body {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: Graphik, sans-serif;
+    font-weight: 500;
     background: #eee;
     margin: 0; padding: 0;
 }
@@ -28,13 +21,22 @@ input {
 
 div.header {
     background: #000;
-    color: #eee;
-    padding: 4px;
-    height: 40px;
+    color: #fff;
+    height: 80px;
     
     h3 {
-        font-weight: bold;
+        width: 350px;
+        margin: auto;
+        
+        background: #000 url(/lib/images/logo.png) no-repeat top left;
+        background-size: 40px 40px;
+        background-position: 0 20px;
+        line-height: 1;
         padding: 10px;
+        padding-left: 50px;
+        font-size: $largeFont;
+        font-weight: 900;
+        padding-top: 25px;
     }
 
     button {

@@ -1,15 +1,46 @@
+@font-face {
+  font-family: 'Graphik';
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+  src: url("/lib/fonts/Graphik-Medium-Web.eot");
+  src: url("/lib/fonts/Graphik-Medium-Web.eot?#iefix") format("embedded-opentype"), url("/lib/fonts/Graphik-Medium-Web.woff") format("woff"), url("/lib/fonts/Graphik-Medium-Web.ttf") format("truetype"), url("/lib/fonts/Graphik-Medium-Web.svg#GraphikMedium Web") format("svg"); }
+
+@font-face {
+  font-family: 'Graphik';
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: normal;
+  src: url("/lib/fonts/Graphik-Bold-Web.eot");
+  src: url("/lib/fonts/Graphik-Bold-Web.eot?#iefix") format("embedded-opentype"), url("/lib/fonts/Graphik-Bold-Web.woff") format("woff"), url("/lib/fonts/Graphik-Bold-Web.ttf") format("truetype"), url("/lib/fonts/Graphik-Bold-Web.svg#GraphikBold Web") format("svg"); }
+
+@font-face {
+  font-family: 'Graphik';
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: normal;
+  src: url("/lib/fonts/Graphik-Super-Web.eot");
+  src: url("/lib/fonts/Graphik-Super-Web.eot?#iefix") format("embedded-opentype"), url("/lib/fonts/Graphik-Super-Web.woff") format("woff"), url("/lib/fonts/Graphik-Super-Web.ttf") format("truetype"), url("/lib/fonts/Graphik-Super-Web.svg#GraphikSuper Web") format("svg"); }
+
 html, body, .full-page {
   height: 100%; }
-
-div.full-page {
-  position: relative; }
 
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
+div.full-page {
+  position: relative;
+  background: white; }
+
+@media (min-width: 640px) {
+  div.full-page {
+    width: 540px;
+    box-shadow: 0 0 10px #aaaaaa;
+    margin: auto; } }
 body {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Graphik, sans-serif;
+  font-weight: 500;
   background: #eee;
   margin: 0;
   padding: 0; }
@@ -24,12 +55,20 @@ input {
 
 div.header {
   background: #000;
-  color: #eee;
-  padding: 4px;
-  height: 40px; }
+  color: #fff;
+  height: 80px; }
   div.header h3 {
-    font-weight: bold;
-    padding: 10px; }
+    width: 350px;
+    margin: auto;
+    background: black url(/lib/images/logo.png) no-repeat top left;
+    background-size: 40px 40px;
+    background-position: 0 20px;
+    line-height: 1;
+    padding: 10px;
+    padding-left: 50px;
+    font-size: 26px;
+    font-weight: 900;
+    padding-top: 25px; }
   div.header button {
     padding: 5px 10px;
     margin: 4px; }

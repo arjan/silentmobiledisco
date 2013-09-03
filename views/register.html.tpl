@@ -1,6 +1,6 @@
-<div ng-controller="registerCtrl">
+<div ng-controller="registerCtrl" class="full-page">
     <div class="header">
-        <h3>Sign in</h3>
+        <h3>Silent Mobile Disco</h3>
     </div>
 
     <div class="content">

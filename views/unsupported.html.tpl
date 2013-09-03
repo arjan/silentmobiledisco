@@ -1,4 +1,4 @@
-<div ng-controller="registerCtrl">
+<div class="full-page">
     <div class="header">
         <h3>We are sorry...</h3>
     </div>

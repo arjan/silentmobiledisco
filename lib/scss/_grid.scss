@@ -1,0 +1,23 @@
+
+html, body, .full-page {
+    height: 100%;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+div.full-page {
+    position: relative;
+    background: white;
+}
+
+@media (min-width: 640px) {
+    div.full-page {
+        width: 540px;
+        box-shadow: 0 0 10px #aaa;
+        margin: auto;
+    }
+}
+
