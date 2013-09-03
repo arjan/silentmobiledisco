@@ -63,7 +63,6 @@ div.content {
     p.step {
         span.nr {
             display: inline-block;
-            margin-top: 16px;
             vertical-align: -10%;
             margin-bottom: -10px;
             padding-left: 3*$vpad;
@@ -73,10 +72,11 @@ div.content {
         }
         text-indent: -$vpad*3;
         margin-left: $vpad*3;
+        margin-bottom: $vpad;
     }
 
     div.buttons {
-        margin-top: $vpad;
+        //margin-top: $vpad;
     }
 }    
 

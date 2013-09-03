@@ -83,18 +83,16 @@ div.content {
     line-height: 1.5; }
   div.content p.step {
     text-indent: -36px;
-    margin-left: 36px; }
+    margin-left: 36px;
+    margin-bottom: 12px; }
     div.content p.step span.nr {
       display: inline-block;
-      margin-top: 16px;
       vertical-align: -10%;
       margin-bottom: -10px;
       padding-left: 36px;
       font-family: "Graphik", sans-serif;
       font-weight: 900;
       font-size: 32px; }
-  div.content div.buttons {
-    margin-top: 12px; }
 
 .btn {
   font-family: Graphik, sans-serif;
