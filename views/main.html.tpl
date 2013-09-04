@@ -37,7 +37,7 @@
                 <p class="step compact-space"><span class="nr">1</span>Click Start</p>
                 <p class="step"><span class="nr">2</span>Wait for your dance partner…</p>
                 <p class="step"><span class="nr">3</span>The dancing game is on. There is only one other dancer grooving to the same tune. Find this dancer by showing your moves.</p>
-                <p class="step"><span class="nr">4</span>Exchange code with your dance partner to win points!</p>
+                <p class="step"><span class="nr">4</span>Exchange codes with your dance partner to win points!</p>
                 
                 <div class="buttons">
                     <button class="btn full" ng-click="start()">Start</button>
