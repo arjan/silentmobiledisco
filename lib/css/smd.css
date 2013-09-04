@@ -78,6 +78,13 @@ div.header {
       padding-top: 10px;
       background-position: 0 10px;
       padding-left: 30px; } }
+a {
+  color: black; }
+  a:focus {
+    color: black; }
+  a.cancel {
+    padding-left: 12px; }
+
 div.content {
   padding: 36px; }
   div.content.with-meta {

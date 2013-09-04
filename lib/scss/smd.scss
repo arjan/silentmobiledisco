@@ -62,6 +62,17 @@ div.header {
     }
 }
 
+a {
+    color: black;
+    &:focus {
+        color: black;
+    }
+
+    &.cancel {
+        padding-left: $vpad;
+    }
+}
+
 div.content {
     padding: 3*$vpad;
     &.with-meta {
