@@ -7,10 +7,20 @@ $mediumFont: 18px;
 $smallFont: 12px;
 
 $vpad: 12px;
+@mixin normalFont {
+    font-family: 'Helvetica light', Helvetica, Arial, sans-serif;
+}
+@mixin graphik900 {
+    font-family: Graphik, sans-serif;
+    font-weight: 900;
+}
+@mixin graphik700 {
+    font-family: Graphik, sans-serif;
+    font-weight: 700;
+}
 
 body {
-    font-family: Graphik, sans-serif;
-    font-weight: 500;
+    @include normalFont;
     background: #eee;
     margin: 0; padding: 0;
 }
@@ -32,12 +42,24 @@ div.header {
         line-height: 1;
         padding: 10px;
         padding-left: 50px;
+        @include graphik900;
         font-size: $largeFont;
-        font-weight: 900;
         padding-top: 25px;
     }
 }
 
+@media (max-width: 480px) {
+    div.header {
+        height: 40px;
+        h3 {
+            font-size: $mediumFont;
+            background-size: 20px 20px;
+            padding-top: 10px;
+            background-position: 0 10px;
+            padding-left: 30px;
+        }
+    }
+}
 
 div.content {
     padding: 3*$vpad;
@@ -61,6 +83,7 @@ div.content {
         line-height: 1.5;
     }
     .big {
+        vertical-align: -10%;
         font-size: $xLargeFont;
     }
 
@@ -75,7 +98,7 @@ div.content {
             margin-bottom: -10px;
             padding-left: 3*$vpad;
             font-family: 'Graphik', sans-serif;
-            font-weight: 900;
+            @include graphik900;
             font-size: $xLargeFont;
         }
         text-indent: -$vpad*3;
@@ -100,7 +123,7 @@ div.content {
 
 
 .btn {
-    font-family: Graphik, sans-serif;
+    @include graphik700;
     font-size: $mediumFont;
     background: #000;
     color: #fff;
@@ -109,11 +132,10 @@ div.content {
     &.small {
         padding: $vpad/3 $vpad/2;
         font-size: $smallFont;
-        font-weight: 700;
     }
     
     &.full {
-    font-weight: 900;
+        @include graphik900;
         padding: $vpad 0.66*$vpad;
         width: 100%;
         font-size: $largeFont;

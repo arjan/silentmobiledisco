@@ -86,18 +86,18 @@
                 </div>
 
                 <div ng-if="enteringCode">
-                    <p class="statusmsg">
-                        You are code:<br />
-                        <span class="big">[[ secret_code ]]</span>
-                    </p>
 
                     <p class="step"><span class="nr">4</span>Enter your partner's code to earn points for the both of you.</p>
 
+                    <button class="btn small right" ng-click="cancelEnterCode()">cancel</button>
+                    <p class="statusmsg">
+                        Your code:&nbsp;&nbsp;<span class="big">[[ secret_code ]]</span>
+                    </p>
+                    
                     <form name="enterForm" novalidate ng-submit="submitEnterCode()">
                         <input type="text" ng-model="enter.code" placeholder="Enter your partner's code…" autofocus required />
                         <div class="buttons">
-                            <button class="btn full" ng-disabled="!enterForm.$valid">Enter</button>
-                            <button class="btn small" ng-click="cancelEnterCode()">cancel</button>
+                            <button class="btn full" ng-disabled="!enterForm.$valid">Go</button>
                         </div>
                     </form>
                     
