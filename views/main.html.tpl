@@ -7,7 +7,9 @@
         <tr>
             <td width="33.3%" class="l">
                 <div ng-if="status == 'playing'">
-                    <span ng-show="has_revealed">[[ title ]]</span>
+                    <span ng-show="has_revealed">
+                        <img src="/lib/images/music.png" width="20" height="20" /><br />
+                        [[ title ]]</span>
                     <button class="btn small" ng-click="song_title()" ng-show="!has_revealed">reveal song</button>
                 </div>
             </td>
@@ -63,18 +65,23 @@
             <div ng-switch-when="playing">
 
                 <div ng-if="!enteringCode">
-                    <p class="step"><span class="nr">3</span>The dancing game is on. There is only one other grooving to the same tune. Find this dancer by showing your moves!</p>
+                    <p ng-show="!has_scored" class="step"><span class="nr">3</span>The dancing game is on. There is only one other grooving to the same tune. Find this dancer by showing your moves!</p>
                     
                     <p class="statusmsg" ng-show="getReady">Get ready...!!!</p>
+
                     <p class="statusmsg" ng-show="!getReady">
-                        <img src="/lib/images/music.png" width="32" height="32" />
-                        <br />
+                        <img src="/lib/images/music.png" width="70" height="70" />
+                    </p>
+                    <p ng-show="has_scored" class="statusmsg big">
+                        [[ title ]]
+                    </p>
+                    <p class="statusmsg" ng-show="!getReady">                    
                         [[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]
                     </p>
 
                     <div class="buttons space-above">
                         <button class="btn full" ng-show="!has_scored" ng-click="enter_code()">I found my dance partner</button>
-                        <p ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
+                        <p class="statusmsg" ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
                     </div>
                 </div>
 
@@ -87,7 +94,7 @@
                     <p class="step"><span class="nr">4</span>Enter your partner's code to earn points for the both of you.</p>
 
                     <form name="enterForm" novalidate ng-submit="submitEnterCode()">
-                        <input type="text" id="enteredCode" placeholder="Enter your partner's code…" autofocus required />
+                        <input type="text" ng-model="enter.code" placeholder="Enter your partner's code…" autofocus required />
                         <div class="buttons">
                             <button class="btn full" ng-disabled="!enterForm.$valid">Enter</button>
                             <button class="btn small" ng-click="cancelEnterCode()">cancel</button>

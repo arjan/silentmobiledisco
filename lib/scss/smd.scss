@@ -59,10 +59,11 @@ div.content {
     }
     p {
         line-height: 1.5;
-        span.big {
-            font-size: $xLargeFont;
-        }
     }
+    .big {
+        font-size: $xLargeFont;
+    }
+
     .compact-space {
         margin-top: -3*$vpad;
     }

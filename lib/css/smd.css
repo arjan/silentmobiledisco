@@ -81,8 +81,8 @@ div.content {
     margin-bottom: 12px; }
   div.content p {
     line-height: 1.5; }
-    div.content p span.big {
-      font-size: 32px; }
+  div.content .big {
+    font-size: 32px; }
   div.content .compact-space {
     margin-top: -36px; }
   div.content p.step {
