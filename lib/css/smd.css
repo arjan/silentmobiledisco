@@ -69,7 +69,7 @@ div.header {
     font-size: 26px;
     padding-top: 25px; }
 
-@media (max-width: 480px) {
+@media only screen and (max-width: 320px) {
   div.header {
     height: 40px; }
     div.header h3 {

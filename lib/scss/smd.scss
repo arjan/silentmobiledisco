@@ -48,7 +48,8 @@ div.header {
     }
 }
 
-@media (max-width: 480px) {
+// small devices, iPhones etc
+@media only screen and (max-width : 320px) {
     div.header {
         height: 40px;
         h3 {
