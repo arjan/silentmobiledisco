@@ -35,7 +35,7 @@ add(EventType, Props, Context) ->
     case proplists:lookup(score, Props) of
         {score, _} ->
             PlayerId = proplists:get_value(player_id, Props),
-            z_depcache:flush({disco_player, PlayerId}, Context),
+            z_depcache:flush({disco_player, z_convert:to_list(PlayerId)}, Context),
             silentmobiledisco:broadcast_highscores(Context);
         _ ->
             ok
