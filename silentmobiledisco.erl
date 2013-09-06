@@ -283,6 +283,7 @@ skip_song(Player, Context) ->
     send_player_message(Other, "Your partner skipped the rest of this song... :-(", Context),
     send_player_state(Player, Context),
     send_player_state(Other, Context),
+    broadcast_highscores(Context),
     find_waiting(Player, Context),
     ok.
 
