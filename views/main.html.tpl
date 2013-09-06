@@ -107,6 +107,7 @@
             
         </div>
 
+        <button class="btn small lights" ng-click="toggle_lights()"><span ng-show="!lights">Lights on!</span><span ng-show="lights">Light off</span></button>
         <button class="btn small panic" ng-click="panic()">Panic!</button>
         
     </div>

@@ -194,8 +194,12 @@ p.unsupported {
 button.panic {
   position: absolute;
   right: 0px;
-  bottom: 0px;
-  background: #000; }
+  bottom: 0px; }
+
+button.lights {
+  position: absolute;
+  left: 0px;
+  bottom: 0px; }
 
 .message-area div {
   color: black;
