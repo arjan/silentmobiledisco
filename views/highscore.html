@@ -8,13 +8,23 @@
             <tr>
                 <th width="2"></th><th width="2"></th>
                 
-                <th>Name</th><th>Score</th>
+                <th>Name</th><th>Score</th><th>Status</th><th>Info</th>
             </tr>
             <tr ng-repeat="player in highscores">
                 <td>[[ $index+1 ]]</td>
                 <td><span ng-show="player.connected">&#x2713;</span></td>
-                <td>[[ player.player_name ]]</td>
+                <td>[[ player.name ]]</td>
                 <td>[[ player.score ]]</td>
+                <td ng-show="player.connected">
+                    [[ player.status ]]
+                </td>
+                <td ng-show="player.connected">
+                    <span ng-show="player.status == 'playing'">
+                        <span ng-show="player.has_scored">&#x2713;</span>
+                        [[ player.title ]]
+                        <span class="small">with: [[ player.connected_player.struct.name ]]</span>
+                    </span>
+                </td>
             </tr>
         </table>
 

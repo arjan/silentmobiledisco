@@ -2,6 +2,7 @@
 
 -include("zotonic.hrl").
 -define(table, disco_player).
+-define(key(P), {disco_player, z_convert:to_list(P)}).
 
 -export(
    [
@@ -45,15 +46,22 @@ insert(Id, Props, Context) ->
         {ok, _} ->
             z_db:delete(?table, Id, Context)
     end,
-    z_db:insert(?table, [{id, Id}|Props], Context).
+    {ok, _} = z_db:insert(?table, [{id, Id}|Props], Context),
+    z_depcache:flush(?key(Id), Context),
+    {ok, Id}.
 
 get(Id, Context) ->
-    case z_db:select(?table, Id, Context) of
-        {ok, []} -> {ok, []};
-        {ok, Props} ->
-            Score = m_disco_log:get_score(Id, Context),
-            {ok, [{score, Score} | Props]}
-    end.
+    z_depcache:memo(fun() ->
+                            case z_db:select(?table, Id, Context) of
+                                {ok, []} -> {ok, []};
+                                {ok, Props} ->
+                                    Score = m_disco_log:get_score(Id, Context),
+                                    {ok, [{score, Score} | Props]}
+                            end
+                    end,
+                    ?key(Id),
+                    3600,
+                    Context).
              
 get(Id, Key, Context) ->
     {ok, Player} = get(Id, Context),
@@ -66,7 +74,8 @@ set(Id, Key, Value, Context) ->
     set(Id, [{Key, Value}], Context).
 
 set(Id, Props, Context) ->
-    z_db:update(?table, Id, Props, Context).
+    z_db:update(?table, Id, Props, Context),
+    z_depcache:flush(?key(Id), Context).
 
 
 find_and_connect(PlayerId, SongId, Context) ->
@@ -83,8 +92,8 @@ find_and_connect(PlayerId, SongId, Context) ->
       Context).
 
 find_waiting(PlayerId, Context) ->
-    %% z_db:q1("SELECT id FROM disco_player WHERE id != $1 AND status = 'waiting' and connected=true ORDER BY random() LIMIT 1",
-    z_db:q1("SELECT id FROM disco_player WHERE id != $1 AND (last_connected_to IS NULL OR last_connected_to != $1) AND status = 'waiting' and connected=true ORDER BY random() LIMIT 1",
+     z_db:q1("SELECT id FROM disco_player WHERE id != $1 AND status = 'waiting' and connected=true ORDER BY random() LIMIT 1",
+    %%z_db:q1("SELECT id FROM disco_player WHERE id != $1 AND (last_connected_to IS NULL OR last_connected_to != $1) AND status = 'waiting' and connected=true ORDER BY random() LIMIT 1",
             [PlayerId], Context).
 
 connect(PlayerA, PlayerB, SongId, Context) ->
@@ -99,4 +108,6 @@ connect(PlayerA, PlayerB, SongId, Context) ->
 
     z_db:q1("UPDATE disco_player SET last_connected_to = NULL where last_connected_to = $1 AND id != $2", [PlayerB, PlayerA], Context),
     z_db:q1("UPDATE disco_player SET last_connected_to = NULL where last_connected_to = $1 AND id != $2", [PlayerA, PlayerB], Context),
+    z_depcache:flush(?key(PlayerA), Context),
+    z_depcache:flush(?key(PlayerB), Context),
     ok.

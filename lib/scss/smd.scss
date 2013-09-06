@@ -62,6 +62,14 @@ div.header {
     }
 }
 
+.small {
+    font-size: 80%;
+}
+
+em {
+    font-style: italic;
+}
+
 a {
     color: black;
     &:focus {
@@ -130,9 +138,16 @@ div.content {
         &.space-above {
             margin-top: 4*$vpad;
         }
+        margin-bottom: $vpad;
     }
 }    
 
+img.music {
+    vertical-align: -20%;
+}
+div.songtitle {
+    font-weight: bold;
+}
 
 .btn {
     @include graphik700;

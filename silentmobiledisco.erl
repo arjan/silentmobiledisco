@@ -24,6 +24,8 @@
 
 -include_lib("zotonic.hrl").
 
+-export([broadcast_highscores/1]).
+
 %% WS exports
 -export([init/1, poll/1, ws_call/4, ws_cast/4, ws_opened/2, ws_closed/2]).
 
@@ -64,12 +66,13 @@ ws_cast(disco_start, [], From, Context) ->
     ok;
 
 ws_cast(disco_buffering_done, [], _From, Context) ->
-    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {secret_code, secret_code()}], Context),
+    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {secret_code, secret_code()}, {playing_since, calendar:local_time()}], Context),
     {ok, Other} = m_disco_player:get_other_player(player_id(Context), Context),
     case proplists:get_value(status, Other) of
         <<"playing">> ->
             send_player_state(player_id(Context), Context),
             send_player_state(proplists:get_value(id, Other), Context),
+            broadcast_highscores(Context),
             ok;
         _ -> 
             ok
@@ -127,10 +130,10 @@ ws_call(disco_guess, [{"code", Code}], _From, Context) ->
     case z_convert:to_list(proplists:get_value(secret_code, Other)) =:= Code of
         true ->
             PlayerB = proplists:get_value(id, Other),
-            log("disco_score", [{player_id, Player}, {score, 10}], Context),
-            log("disco_score", [{player_id, PlayerB}, {score, 10}], Context),
             m_disco_player:set(Player, [{has_scored, true}, {has_revealed, true}], Context),
             m_disco_player:set(PlayerB, [{has_scored, true}, {has_revealed, true}], Context),
+            log("disco_score", [{player_id, Player}, {score, 10}], Context),
+            log("disco_score", [{player_id, PlayerB}, {score, 10}], Context),
             send_player_state(Player, Context),
             send_player_state(PlayerB, Context),
             true;
@@ -193,16 +196,22 @@ encode_player_json(Player, Context) ->
                      <<"buffering">> ->
                          Id = proplists:get_value(song_id, Player),
                          M = m_media:get(Id, Context),
-                         [{title, z_html:unescape(z_trans:trans(m_rsc:p(Id, title, Context), Context))},
-                          {filename, proplists:get_value(filename, M)}];
+                         [{filename, proplists:get_value(filename, M)}];
                      _ ->
                          []
                  end,
+    TitleProps = case proplists:get_value(song_id, Player) of
+                     undefined -> [];
+                     SongId ->
+                         [{title, z_html:unescape(z_trans:trans(m_rsc:p(SongId, title, Context), Context))}]
+                 end,
     {ok, Other} = m_disco_player:get(proplists:get_value(connected_to, Player), Context),
-    {struct, [{connected_player, {struct, encode_player(Other)}}] ++ ExtraProps ++ encode_player(Player)}.
+    {struct, [{connected_player, {struct, encode_player(Other)}}] ++ ExtraProps ++ TitleProps ++ encode_player(Player)}.
 
 encode_player(Player) ->
-    lists:map(fun({K, undefined}) -> {K, null}; (X) -> X end, proplists:delete(ws, Player)).
+    lists:map(fun({K, undefined}) -> {K, null};
+                 ({K, {{_,_,_},_}=V}) -> {K, z_dateformat:format(V, "Y-m-d H:i:s", en)};
+                 (X) -> X end, proplists:delete(ws, Player)).
               
 find_random_song(_PlayerId, Context) ->
     Audio = m_rsc:name_to_id_check(audio, Context),
@@ -292,7 +301,12 @@ next_song(Player, Context) ->
     end.
 
 broadcast_highscores(Context) ->
-    z_notifier:notify({disco_highscores, m_disco_log:highscores(Context)}, Context).
+    Highscores = lists:map(fun({PlayerId, Score}) ->
+                                   {struct, P} = player_state(PlayerId, Context),
+                                   [{score, Score} | P]
+                           end,
+                           m_disco_log:highscores(Context)),
+    z_notifier:notify({disco_highscores, Highscores}, Context).
 
 
 

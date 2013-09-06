@@ -78,6 +78,12 @@ div.header {
       padding-top: 10px;
       background-position: 0 10px;
       padding-left: 30px; } }
+.small {
+  font-size: 80%; }
+
+em {
+  font-style: italic; }
+
 a {
   color: black; }
   a:focus {
@@ -123,8 +129,16 @@ div.content {
     margin-bottom: 12px; }
     div.content p.statusmsg.small {
       font-size: 12px; }
-  div.content div.buttons.space-above {
-    margin-top: 48px; }
+  div.content div.buttons {
+    margin-bottom: 12px; }
+    div.content div.buttons.space-above {
+      margin-top: 48px; }
+
+img.music {
+  vertical-align: -20%; }
+
+div.songtitle {
+  font-weight: bold; }
 
 .btn {
   font-family: Graphik, sans-serif;

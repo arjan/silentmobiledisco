@@ -34,7 +34,9 @@ add(EventType, Props, Context) ->
     z_db:insert(?table, [{event, EventType}, {time, calendar:local_time()}|Props], Context),
     case proplists:lookup(score, Props) of
         {score, _} ->
-            z_notifier:notify({disco_highscores, highscores(Context)}, Context);
+            PlayerId = proplists:get_value(player_id, Props),
+            z_depcache:flush({disco_player, PlayerId}, Context),
+            silentmobiledisco:broadcast_highscores(Context);
         _ ->
             ok
     end.
@@ -54,5 +56,5 @@ history(Offset, Limit, Context) ->
     z_db:assoc("SELECT * FROM disco_log ORDER BY time DESC LIMIT $1 OFFSET $2", [Limit, Offset], Context).
 
 highscores(Context) ->
-    z_db:assoc("SELECT disco_player.id AS player_id, (array_agg(distinct disco_player.name))[1] as player_name, connected, SUM(score) AS score FROM disco_log JOIN disco_player ON (disco_log.player_id = disco_player.id) WHERE disco_log.score IS NOT NULL GROUP BY disco_player.id, connected ORDER BY SUM(score) DESC", Context).
+    z_db:q("SELECT disco_player.id AS player_id, SUM(score) AS score FROM disco_log JOIN disco_player ON (disco_log.player_id = disco_player.id) WHERE disco_log.score IS NOT NULL GROUP BY disco_player.id, connected ORDER BY SUM(score) DESC", Context).
     

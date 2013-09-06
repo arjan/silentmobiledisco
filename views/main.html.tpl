@@ -7,10 +7,14 @@
         <tr>
             <td width="33.3%" class="l">
                 <div ng-if="status == 'playing'">
-                    <span ng-show="has_revealed">
-                        <img src="/lib/images/music.png" width="20" height="20" /><br />
-                        [[ title ]]</span>
+                    <div ng-show="has_revealed" class="songtitle">
+                        [[ title ]]
+                    </div>
                     <button class="btn small" ng-click="song_title()" ng-show="!has_revealed">reveal song</button>
+                    <div ng-show="!getReady">
+                        <img src="/lib/images/music.png" width="20" height="20" class="music" /> [[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]
+                    </div>
+                    
                 </div>
             </td>
             <td width="33.3%" class="m">
@@ -67,22 +71,19 @@
                 <div ng-if="!enteringCode">
                     <p ng-show="!has_scored" class="step"><span class="nr">3</span>The dancing game is on. There is only one other grooving to the same tune. Find this dancer by showing your moves!</p>
                     
+                    <div class="buttons" ng-show="!getReady">
+                        <button class="btn full" ng-show="!has_scored" ng-click="enter_code()">I found my dance partner</button>
+                        <p class="statusmsg" ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
+                    </div>
+
                     <p class="statusmsg" ng-show="getReady">Get ready...!!!</p>
 
                     <p class="statusmsg" ng-show="!getReady">
-                        <img src="/lib/images/music.png" width="70" height="70" />
                     </p>
                     <p ng-show="has_scored" class="statusmsg big">
                         [[ title ]]
                     </p>
-                    <p class="statusmsg" ng-show="!getReady">                    
-                        [[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]
-                    </p>
 
-                    <div class="buttons space-above">
-                        <button class="btn full" ng-show="!has_scored" ng-click="enter_code()">I found my dance partner</button>
-                        <p class="statusmsg" ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
-                    </div>
                 </div>
 
                 <div ng-if="enteringCode">
