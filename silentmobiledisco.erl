@@ -226,10 +226,10 @@ find_random_song(_PlayerId, Context) ->
 
 
 player_id(Context) ->
-    case z_session:get(player_id, Context) of
+    case z_session:get_persistent(player_id, Context) of
         undefined ->
-            Id = z_ids:id(),
-            z_session:set(player_id, Id, Context),
+            Id = list_to_binary(z_ids:id()),
+            z_session:set_persistent(player_id, Id, Context),
             Id;
         I -> I
     end.
