@@ -1,5 +1,7 @@
 BUGS
 
+* UTF-8 in player namen
+
 * Reconnect handling beter
 
 * Race conditions verhelpen
