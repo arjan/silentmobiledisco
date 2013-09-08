@@ -2,9 +2,6 @@ BUGS
 
 * Reconnect handling beter
 
-* Geen sessiecookie gebruiken maar browsercookie ivm (per ongeluk)
-  sluiten van browser window
-
 * Race conditions verhelpen
 
 * Javascript memory leak
@@ -21,6 +18,9 @@ FEATURES
 * Alternatief voor code invullen?
 
 DONE
+
+* Geen sessiecookie gebruiken maar browsercookie ivm (per ongeluk)
+  sluiten van browser window
 
 * Zorgen dat er niet mensen met hetzelfde liedje zijn die niet
   gekoppeld kunnen worden
