@@ -122,7 +122,7 @@ ws_call(disco_connect, [], _From, Context) ->
 
 ws_call(disco_init, [], _From, Context) ->
     Player = player_id(Context),
-    m_disco_player:set(Player, [{status, registered}], Context),
+    m_disco_player:set(Player, [{status, registered}, {connected_to, undefined}], Context),
     case m_disco_player:get(Player, Context) of
         {ok, []} -> null;
         {ok, PlayerProps} ->
