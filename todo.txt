@@ -1,11 +1,29 @@
-* Zorgen dat er niet mensen met hetzelfde liedje zijn die niet
-  gekoppeld kunnen worden
+BUGS
 
-  Optioneel; als ik tijd / zin over heb:
-* Volumeknop / slider
+* Reconnect handling beter
 
+* Geen sessiecookie gebruiken maar browsercookie ivm (per ongeluk)
+  sluiten van browser window
+
+* Race conditions verhelpen
+
+* Javascript memory leak
+
+* Wachtmuziekje
+
+* Enter code - scherm van de ander locken zodat maar 1 van de twee het
+  invult?
+
+FEATURES
+
+* Meerdere disco's en/of location based
+
+* Alternatief voor code invullen?
 
 DONE
+
+* Zorgen dat er niet mensen met hetzelfde liedje zijn die niet
+  gekoppeld kunnen worden
 
 * Multi file upload in de admin
 * Oude telefoon melding dat het niet werkt
