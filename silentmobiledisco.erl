@@ -143,7 +143,7 @@ ws_call(disco_guess, [{"code", Code}], _From, Context) ->
             send_player_state(PlayerB, Context),
             true;
         false ->
-            log("disco_score_fail", [{player_id, Player}, {score, -1}], Context),
+            log("disco_score_fail", [{player_id, Player}, {score, -1}, {code_entered, Code}, {other, Other}], Context),
             send_player_state(Player, Context),
             false
     end;
