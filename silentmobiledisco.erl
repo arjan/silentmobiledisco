@@ -85,9 +85,14 @@ ws_cast(disco_attach_highscores, [], From, Context) ->
 
 ws_cast(disco_song_end, [], _From, Context) ->
     Player = player_id(Context),
-    Other = m_disco_player:get(Player, connected_to, Context),
-    next_song(Player, Context),
-    next_song(Other, Context),
+    case m_disco_player:get(Player, status, Context) of
+        <<"playing">> ->
+            log("disco_next", [{player_id, Player}, {score, 1}], Context),
+            set_waiting(Player, Context),
+            send_player_state(Player, Context);
+        _S ->
+            lager:warning("Skip next_song for player in wrong state: ~p - ~p", [Player, _S])
+    end,
     find_waiting(Player, Context);
 
 ws_cast(disco_reveal_title, [], _From, Context) ->
@@ -290,17 +295,6 @@ skip_song(Player, Context) ->
 set_waiting(PlayerId, Context) ->
     m_disco_player:set(PlayerId, [{status, waiting}, {connected_to, undefined}, {secret_code, undefined}], Context).
     
-
-next_song(Player, Context) ->
-    case m_disco_player:get(Player, status, Context) of
-        <<"playing">> ->
-            log("disco_next", [{player_id, Player}, {score, 1}], Context),
-            set_waiting(Player, Context),
-            send_player_state(Player, Context);
-        _S ->
-            lager:warning("Skip next_song for player in wrong state: ~p - ~p", [Player, _S])
-    end.
-
 broadcast_highscores(Context) ->
     Highscores = lists:map(fun({PlayerId, Score}) ->
                                    {struct, P} = player_state(PlayerId, Context),
