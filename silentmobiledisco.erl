@@ -266,10 +266,11 @@ player_stop(PlayerId, Context) ->
     case proplists:get_value(connected_to, Player) of
         undefined -> nop;
         B -> 
-            send_player_message(B, "Your partner decided to quit, or hit the panic button..!", Context),
             set_waiting(B, Context),
             case m_disco_player:get(B, connected, Context) of
-                true -> find_waiting(B, Context);
+                true ->
+                    send_player_message(B, "Your partner decided to quit, or hit the panic button..!", Context),
+                    find_waiting(B, Context);
                 false -> nop
             end
     end,
@@ -290,6 +291,7 @@ skip_song(Player, Context) ->
     send_player_state(Other, Context),
     broadcast_highscores(Context),
     find_waiting(Player, Context),
+    find_waiting(Other, Context),
     ok.
 
 set_waiting(PlayerId, Context) ->
