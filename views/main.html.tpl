@@ -96,7 +96,7 @@
                     </p>
                     
                     <form name="enterForm" novalidate ng-submit="submitEnterCode()">
-                        <input type="number" ng-model="enter.code" placeholder="Enter your partner's code…" autofocus required />
+                        <input type="number" id="enternumber" ng-model="enter.code" placeholder="Enter your partner's code…" autofocus required />
                         <div class="buttons">
                             <button class="btn full" ng-disabled="!enterForm.$valid">Go</button>
                         </div>
