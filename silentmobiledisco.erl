@@ -50,7 +50,7 @@ ws_cast(disco_register, [{"name", Name}, {"user_agent", UserAgent}], From, Conte
        {status, registered},
        {connected_to, undefined},
        {ws, From},
-       {name, Name}],
+       {name, unicode:characters_to_binary(Name)}],
       Context),
     log("disco_register", [{player_id, Player}, {score, 0}], Context),
     broadcast_highscores(Context),
