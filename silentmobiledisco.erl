@@ -26,6 +26,7 @@
 
 %% WS exports
 -export([init/1, poll/1]).
+-export([observe_ng_ws_closed/2]).
 
 %%====================================================================
 %% WS API
@@ -55,3 +56,9 @@ poll(Context) ->
                   end,
                   All),
     ?MODULE:poll(Context).
+
+
+%% @doc When websocket is closed, we disconnect this player and its
+%% opponent.
+observe_ng_ws_closed({ng_ws_closed, _}, Context) ->
+    smd_disco:player_stop(Context).

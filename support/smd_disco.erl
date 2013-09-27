@@ -2,7 +2,11 @@
 -behaviour(ng_ws_handler).
 
 -export([ws_call/5, ws_cast/4]).
--export([player_stop/2, broadcast_highscores/1]).
+-export([
+         player_stop/1,
+         player_stop/2,
+         broadcast_highscores/1
+        ]).
 
 
 
