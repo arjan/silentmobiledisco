@@ -28,7 +28,7 @@
                     Please try again using a different (mobile) web browser. Chrome is known to work.
                 </p>
                 <div class="buttons space-above">
-                    <a class="btn full" href="http://www.google.com/chrome">Download Chrome</a>
+                    <a class="btn full" href="http://www.google.com/chrome">Download&nbsp;Chrome</a>
                 </div>
             </div>
         </div>
