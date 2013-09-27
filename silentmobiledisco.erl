@@ -150,7 +150,7 @@ ws_call(disco_guess, [{"code", Code}], _From, Context) ->
     
 ws_call(disco_stop, [], _From, Context) ->
     player_stop(Context),
-    z_session:set(player_id, undefined, Context),
+    z_session:set_persistent(player_id, undefined, Context),
     ok;
 
 ws_call(_Cmd, _, _, _) ->
