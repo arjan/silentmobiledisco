@@ -148,6 +148,9 @@ img.music {
 div.songtitle {
     font-weight: bold;
 }
+a {
+    text-decoration: none;
+}
 
 .btn {
     @include graphik700;

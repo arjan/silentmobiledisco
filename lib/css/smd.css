@@ -140,6 +140,9 @@ img.music {
 div.songtitle {
   font-weight: bold; }
 
+a {
+  text-decoration: none; }
+
 .btn {
   font-family: Graphik, sans-serif;
   font-weight: 700;

@@ -1,17 +1,27 @@
+HI PRIO
+
+* Uitlegpagina / Disclaimer
+
+* Aan en uit kunnen zetten, per disco
+* Admin panel broadcast message
+
+* Android --> Chrome verwijzing
+
+* Reset van een disco, iedereen uitgelogd
+* Eindtune aan het eind mogelijk maken
+
+
 BUGS
 
-* UTF-8 in player namen
+LONG TERM
 
-* Reconnect handling beter
+* Fallback / engine.io voor connectie
+  * Reconnect handling beter
 
 * Race conditions verhelpen
 
 * Javascript memory leak
 
-* Wachtmuziekje
-
-* Enter code - scherm van de ander locken zodat maar 1 van de twee het
-  invult?
 
 FEATURES
 
@@ -19,20 +29,3 @@ FEATURES
 
 * Alternatief voor code invullen?
 
-DONE
-
-* Geen sessiecookie gebruiken maar browsercookie ivm (per ongeluk)
-  sluiten van browser window
-
-* Zorgen dat er niet mensen met hetzelfde liedje zijn die niet
-  gekoppeld kunnen worden
-
-* Multi file upload in de admin
-* Oude telefoon melding dat het niet werkt
-* Loading indicator / spinner als het liedje aan het laden is
-* "Panic button" die een refresh van de pagina doet
-
-* Melding bij de ander dat je partner het nummer heeft geskipt
-* Titel van liedje pas laten zien als je het geraden hebt
-* Tellertje met het aantal mensen op de dansvloer
-* Knop "ik wil de titel zien" - kost 2 punten
