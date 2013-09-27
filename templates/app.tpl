@@ -5,11 +5,13 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
 
         {% lib
-            "js/apps/jquery-latest.min.js"
-            "js/angular.min.js"
-            "js/angular-zotonic.js"
+            "js/vendor/jquery.min.js"
+            "js/vendor/angular.min.js"
+            "js/ng-zotonic.js"
+
             "js/smd.js"
         %}
+
         {% lib 
             "css/reset.css"
             "css/smd.css"

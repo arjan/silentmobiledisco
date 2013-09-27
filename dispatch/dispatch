@@ -1,6 +1,5 @@
 %% -*- mode: erlang -*-
 [
  {app,   [],	         controller_template,     [{template, "app.tpl"}]},
- {ws,    ["ws"],	     controller_websocket,    [{ws_handler, smd_ws_handler}, {callbacks, silentmobiledisco}]},
  {views, ["views", '*'], controller_static_pages, [{root, "views"}]}
 ].

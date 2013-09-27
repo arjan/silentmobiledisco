@@ -12,7 +12,7 @@
                     </div>
                     <button class="btn small" ng-click="song_title()" ng-show="!has_revealed">reveal song</button>
                     <div ng-show="!getReady">
-                        <img src="/lib/images/music.png" width="20" height="20" class="music" /> [[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]
+                        ♫ [[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]
                     </div>
                     
                 </div>
