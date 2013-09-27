@@ -81,7 +81,7 @@ ws_cast(start, [], From, Context) ->
     ok;
 
 ws_cast(buffering_done, [], _From, Context) ->
-    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {secret_code, secret_code()}, {playing_since, calendar:local_time()}], Context),
+    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {playing_since, calendar:local_time()}], Context),
     {ok, Other} = m_disco_player:get_other_player(player_id(Context), Context),
     case proplists:get_value(status, Other) of
         <<"playing">> ->
@@ -201,10 +201,6 @@ find_random_song(_PlayerId, Context) ->
     end.
 
 
-
-secret_code() ->
-    random:seed(erlang:now()),
-    [$0+random:uniform(9) || _ <- lists:seq(1,4)].
 
 log(Event, Props, Context) ->
     lager:warning(">> Event: ~p ~p", [Event, Props]),

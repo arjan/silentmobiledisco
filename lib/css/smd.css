@@ -161,6 +161,8 @@ a {
     font-size: 26px; }
   .btn:disabled {
     opacity: 0.7; }
+  .btn.active {
+    background: red; }
 
 table.meta {
   width: 100%; }

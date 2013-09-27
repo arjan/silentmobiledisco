@@ -105,10 +105,12 @@ connect(PlayerA, PlayerB, SongId, Context) ->
     set(PlayerA, [{status, buffering},
                   {connected_to, PlayerB},
                   {last_connected_to, PlayerB},
+                  {secret_code, secret_code()},
                   {song_id, SongId}], Context),
     set(PlayerB, [{status, buffering},
                   {connected_to, PlayerA},
                   {last_connected_to, PlayerA},
+                  {secret_code, secret_code()},
                   {song_id, SongId}], Context),
 
     z_db:q1("UPDATE disco_player SET last_connected_to = NULL where last_connected_to = $1 AND id != $2", [PlayerB, PlayerA], Context),
@@ -116,3 +118,8 @@ connect(PlayerA, PlayerB, SongId, Context) ->
     z_depcache:flush(?key(PlayerA), Context),
     z_depcache:flush(?key(PlayerB), Context),
     ok.
+
+secret_code() ->
+    random:seed(erlang:now()),
+    [$0+random:uniform(9) || _ <- lists:seq(1,4)].
+

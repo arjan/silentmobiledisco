@@ -10,20 +10,20 @@
                     <div ng-show="has_revealed" class="songtitle">
                         [[ title ]]
                     </div>
-                    <button class="btn small" ng-click="song_title()" ng-show="!has_revealed">reveal song</button>
+                    <button class="btn small" app-button ng-click="song_title()" ng-show="!has_revealed">reveal song</button>
                     <div ng-show="!getReady">
-                        ♫ [[ playback.currentTime|as_time ]] / [[ playback.duration|as_time ]]
+                        [[ playback.currentTime|as_time ]]&nbsp;♫
                     </div>
                     
                 </div>
             </td>
             <td width="33.3%" class="m">
                 <div ng-if="status == 'playing'">
-                    <button class="btn small" ng-click="song_end()">skip song</button>
+                    <button class="btn small" app-button ng-click="song_end()">skip song</button>
                 </div>
             </td>
             <td width="33.3%" class="r">
-                <button class="btn small" ng-click="logout()">logout</button><br />
+                <button class="btn small" app-button ng-click="logout()">logout</button><br />
                 [[ name ]]<br />
                 score: [[ score ]]<br />
                 <span ng-show="online_count>0">players: [[ online_count ]]</span>
@@ -44,7 +44,7 @@
                 <p class="step"><span class="nr">4</span>Exchange codes with your dance partner to win points!</p>
                 
                 <div class="buttons">
-                    <button class="btn full" ng-click="start()">Start</button>
+                    <button class="btn full" app-button ng-click="start()">Start</button>
                 </div>
             </div>
             
@@ -72,7 +72,7 @@
                     <p ng-show="!has_scored" class="step"><span class="nr">3</span>The dancing game is on. There is only one other grooving to the same tune. Find this dancer by showing your moves!</p>
                     
                     <div class="buttons" ng-show="!getReady">
-                        <button class="btn full" ng-show="!has_scored" ng-click="enter_code()">I found my dance partner</button>
+                        <button class="btn full" app-button ng-show="!has_scored" ng-click="enter_code()">I found my dance partner</button>
                         <p class="statusmsg" ng-show="has_scored">Enjoy your dance with [[ connected_player.name ]]!!</p>
                     </div>
 
@@ -98,7 +98,7 @@
                     <form name="enterForm" novalidate ng-submit="submitEnterCode()">
                         <input type="number" id="enternumber" ng-model="enter.code" placeholder="Enter your partner's code…" autofocus required />
                         <div class="buttons">
-                            <button class="btn full" ng-disabled="!enterForm.$valid">Go</button>
+                            <button class="btn full" app-button ng-disabled="!enterForm.$valid">Go</button>
                         </div>
                     </form>
                     
@@ -107,8 +107,8 @@
             
         </div>
 
-        <button class="btn small lights" ng-show="status=='playing'" ng-click="toggle_lights()"><span ng-show="!lights">Lights on!</span><span ng-show="lights">Light off</span></button>
-        <button class="btn small panic" ng-click="panic()">Panic!</button>
+        <button class="btn small lights" app-button ng-show="status=='playing'" ng-click="toggle_lights()"><span ng-show="!lights">Lights on!</span><span ng-show="lights">Light off</span></button>
+        <button class="btn small panic" app-button ng-click="panic()">Panic!</button>
         
     </div>
 </div>
