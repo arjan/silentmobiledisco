@@ -3,7 +3,6 @@ HI PRIO
 * Uitlegpagina / Disclaimer
 * Meerdere disco's
 
-* Android --> Chrome verwijzing
 
 
 BUGS
@@ -29,4 +28,4 @@ DONE
 * Reset van een disco, iedereen uitgelogd
 * Eindtune aan het eind mogelijk maken
 
-
+* Android --> Chrome verwijzing
