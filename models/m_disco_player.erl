@@ -42,7 +42,10 @@ init(Context) ->
     ok.
 
 reset(Context) ->
-    z_db:q("DELETE FROM " ++ atom_to_list(?table), Context).
+    Table = atom_to_list(?table),
+    Prefix = z_convert:to_list(z_dateformat:format("_Ymd_Hi")),
+    z_db:q("CREATE TABLE " ++ Table ++ Prefix ++ " AS SELECT * FROM " ++ Table, Context),
+    z_db:q("DELETE FROM " ++ Table, Context).
 
 insert(Id, Props, Context) ->
     case get(Id, Context) of
