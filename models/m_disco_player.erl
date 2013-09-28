@@ -7,13 +7,15 @@
 -export(
    [
     init/1,
+    reset/1,
     get/2,
     get/3,
     get_other_player/2,
     set/3,
     set/4,
     insert/3,
-    find_and_connect/3
+    find_and_connect/3,
+    set_final_song/3
    ]).
 
 init(Context) ->
@@ -38,6 +40,9 @@ init(Context) ->
             nop
     end,
     ok.
+
+reset(Context) ->
+    z_db:q("DELETE FROM " ++ atom_to_list(?table), Context).
 
 insert(Id, Props, Context) ->
     case get(Id, Context) of
@@ -101,13 +106,20 @@ find_waiting(PlayerId, Context) ->
     
     z_db:q1(Q, [PlayerId], Context).
 
+set_final_song(Player, SongId, Context) ->
+    set(Player, [{status, buffering},
+                 {final_song, true},
+                 {song_id, SongId}], Context).
+    
 connect(PlayerA, PlayerB, SongId, Context) ->
     set(PlayerA, [{status, buffering},
+                  {final_song, false},
                   {connected_to, PlayerB},
                   {last_connected_to, PlayerB},
                   {secret_code, secret_code()},
                   {song_id, SongId}], Context),
     set(PlayerB, [{status, buffering},
+                  {final_song, false},
                   {connected_to, PlayerA},
                   {last_connected_to, PlayerA},
                   {secret_code, secret_code()},

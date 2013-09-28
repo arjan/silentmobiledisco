@@ -6,7 +6,7 @@
     <table class="meta">
         <tr>
             <td width="33.3%" class="l">
-                <div ng-if="status == 'playing'">
+                <div ng-if="status == 'playing' || status == 'playing_final_song'">
                     <div ng-show="has_revealed" class="songtitle">
                         [[ title ]]
                     </div>
@@ -103,6 +103,12 @@
                     </form>
                     
                 </div>                
+            </div>
+
+            <div ng-switch-when="playing_final_song">
+                <p class="step"><span class="nr">The disco is over…!</span</p>
+                <p class="statusmsg">Please enjoy this final song, and come back any time!</p>
+                <p class="statusmsg small">Book your own mobile silent disco on <u>www.silentmobiledisco.nl</u></p>
             </div>
             
         </div>

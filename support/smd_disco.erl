@@ -5,7 +5,9 @@
 -export([
          player_stop/1,
          player_stop/2,
-         broadcast_highscores/1
+         broadcast_highscores/1,
+         send_player_state/2,
+         send/2
         ]).
 
 
@@ -16,13 +18,20 @@
 
 ws_call(init, [], _From, _ReplyId, Context) ->
     Player = player_id(Context),
-    m_disco_player:set(Player, [{status, registered}, {connected_to, undefined}], Context),
-    R = case m_disco_player:get(Player, Context) of
-            {ok, []} -> null;
-            {ok, PlayerProps} ->
-                proplists:get_value(name, PlayerProps)
-        end,
-    {reply, R};
+
+    case z_convert:to_bool(m_config:get_value(silentmobiledisco, disco_ended, false, Context)) of
+        false ->
+            m_disco_player:set(Player, [{status, registered}, {connected_to, undefined}], Context),
+            R = case m_disco_player:get(Player, Context) of
+                    {ok, []} ->
+                        [{screen, register}];
+                    {ok, PlayerProps} ->
+                        [{screen, start}, {name, proplists:get_value(name, PlayerProps)}]
+                end,
+            {reply, {struct, R}};
+        true ->
+            {reply, {struct, [{screen,stopped}]}}
+    end;
 
 ws_call(connect, [], _From, _ReplyId, Context) ->
     {reply, player_state(player_id(Context), Context)};
@@ -80,23 +89,24 @@ ws_cast(start, [], From, Context) ->
     send_stats_to_all_players(Context),
     ok;
 
-ws_cast(buffering_done, [], _From, Context) ->
-    m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {playing_since, calendar:local_time()}], Context),
-    {ok, Other} = m_disco_player:get_other_player(player_id(Context), Context),
-    case proplists:get_value(status, Other) of
-        <<"playing">> ->
-            send_player_state(player_id(Context), Context),
-            send_player_state(proplists:get_value(id, Other), Context),
-            broadcast_highscores(Context),
-            ok;
-        _ -> 
-            ok
+ws_cast(buffering_done, [{"final_song", IsFinal}], _From, Context) ->
+    case IsFinal of
+        false ->
+            m_disco_player:set(player_id(Context), [{status, playing}, {has_scored, false}, {has_revealed, false}, {playing_since, calendar:local_time()}], Context),
+            {ok, Other} = m_disco_player:get_other_player(player_id(Context), Context),
+            case proplists:get_value(status, Other) of
+                <<"playing">> ->
+                    send_player_state(player_id(Context), Context),
+                    send_player_state(proplists:get_value(id, Other), Context),
+                    broadcast_highscores(Context),
+                    ok;
+                _ -> 
+                    ok
+            end;
+        true ->
+            m_disco_player:set(player_id(Context), [{status, playing_final_song}, {connected_to, undefined}, {has_revealed, true}, {playing_since, calendar:local_time()}], Context),
+            send_player_state(player_id(Context), Context)
     end;
-
-ws_cast(attach_highscores, [], From, Context) ->
-    z_notifier:observe(disco_highscores, From, Context),
-    broadcast_highscores(Context),
-    nop;
 
 ws_cast(song_end, [], _From, Context) ->
     Player = player_id(Context),
@@ -129,15 +139,6 @@ ws_cast(panic, [], _From, Context) ->
     lager:warning("Player pressed the panic button..: ~p", [Player]),
     ok;
 
-ws_cast(broadcast, [{"message", Message}], _From, Context) ->
-    Pids = player_pids(Context),
-    lists:foreach(fun(Pid) ->
-                          send_message(Pid, Message);
-                     end,
-                  Pids),
-    lager:warning("Broadcasted message: ~p", [Message]),
-    ok;
-
 ws_cast(skip, [], _From, Context) ->
     skip_song(player_id(Context), Context).
 
@@ -155,13 +156,14 @@ send_player_message(PlayerId, Message, Context) ->
     WS = proplists:get_value(ws, Player),
     case is_pid(WS) andalso proplists:get_value(connected, Player) =:= true of
         true ->
-            send_message(WS, Message);
+            send(WS, [{message, Message}]);
         false ->
             nop
     end.
 
-send_message(Pid, Message) ->
-    controller_websocket:websocket_send_data(Pid, mochijson:encode({struct, [{message, Message}]})).    
+send(Pid, Msg) ->
+    Payload = mochijson:encode(z_convert:to_json(Msg)),
+    controller_websocket:websocket_send_data(Pid, Payload).    
 
 send_player_state(PlayerId, Context) ->
     {ok, Player} = m_disco_player:get(PlayerId, Context),
@@ -276,7 +278,18 @@ broadcast_highscores(Context) ->
     z_notifier:notify({disco_highscores, Highscores}, Context).
 
 
-
+active_players(Context) ->
+    All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),
+    lists:foldl(fun({Id, Props}, Acc) ->
+                        Pid = proplists:get_value(ws, Props),
+                        case is_pid(Pid) and erlang:is_process_alive(Pid) of
+                            true ->
+                                [Id|Acc];
+                            false ->
+                                Acc
+                        end
+                end,
+                [], All).
 
 player_pids(Context) ->
     All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),

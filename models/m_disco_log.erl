@@ -10,7 +10,8 @@
     get_score/2,
     history/1,
     history/3,
-    highscores/1
+    highscores/1,
+    reset/1
    ]).
 
 init(Context) ->
@@ -29,6 +30,9 @@ init(Context) ->
         true -> nop
     end,
     ok.
+
+reset(Context) ->
+    z_db:q("DELETE FROM " ++ atom_to_list(?table), Context).
 
 add(EventType, Props, Context) ->
     z_db:insert(?table, [{event, EventType}, {time, calendar:local_time()}|Props], Context),
