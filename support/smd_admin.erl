@@ -54,6 +54,7 @@ ws_cast(disco_reset, [], _From, Context) ->
                           smd_disco:send(Pid, [{disco_reset, true}])
                      end,
                   Pids),
+    smd_disco:broadcast_highscores(Context),
     ok.
 
 
