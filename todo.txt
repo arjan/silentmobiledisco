@@ -1,14 +1,9 @@
 HI PRIO
 
 * Uitlegpagina / Disclaimer
-
-* Aan en uit kunnen zetten, per disco
-* Admin panel broadcast message
+* Meerdere disco's
 
 * Android --> Chrome verwijzing
-
-* Reset van een disco, iedereen uitgelogd
-* Eindtune aan het eind mogelijk maken
 
 
 BUGS
@@ -28,4 +23,10 @@ FEATURES
 * Meerdere disco's en/of location based
 
 * Alternatief voor code invullen?
+
+DONE
+
+* Reset van een disco, iedereen uitgelogd
+* Eindtune aan het eind mogelijk maken
+
 
