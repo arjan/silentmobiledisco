@@ -164,6 +164,9 @@ a {
   .btn.active {
     background: red; }
 
+div.meta {
+  padding: 6px; }
+
 table.meta {
   width: 100%; }
   table.meta td {

@@ -129,6 +129,15 @@ ws_cast(panic, [], _From, Context) ->
     lager:warning("Player pressed the panic button..: ~p", [Player]),
     ok;
 
+ws_cast(broadcast, [{"message", Message}], _From, Context) ->
+    Pids = player_pids(Context),
+    lists:foreach(fun(Pid) ->
+                          send_message(Pid, Message);
+                     end,
+                  Pids),
+    lager:warning("Broadcasted message: ~p", [Message]),
+    ok;
+
 ws_cast(skip, [], _From, Context) ->
     skip_song(player_id(Context), Context).
 
@@ -146,11 +155,13 @@ send_player_message(PlayerId, Message, Context) ->
     WS = proplists:get_value(ws, Player),
     case is_pid(WS) andalso proplists:get_value(connected, Player) =:= true of
         true ->
-            controller_websocket:websocket_send_data(WS, mochijson:encode({struct, [{message, Message}]}));
+            send_message(WS, Message);
         false ->
             nop
     end.
 
+send_message(Pid, Message) ->
+    controller_websocket:websocket_send_data(Pid, mochijson:encode({struct, [{message, Message}]})).    
 
 send_player_state(PlayerId, Context) ->
     {ok, Player} = m_disco_player:get(PlayerId, Context),
@@ -266,23 +277,6 @@ broadcast_highscores(Context) ->
 
 
 
-poll(Context) ->
-    timer:sleep(5000),
-    All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),
-    lists:foreach(fun({Id, Props}) ->
-                          case proplists:get_value(ws, Props) of
-                              undefined -> nop;
-                              P when is_pid(P) ->
-                                  case erlang:is_process_alive(P) of
-                                      true ->
-                                          nop;
-                                      false ->
-                                          player_stop(Id, Context)
-                                  end
-                          end
-                  end,
-                  All),
-    ?MODULE:poll(Context).
 
 player_pids(Context) ->
     All = z_db:q("SELECT id, props FROM disco_player WHERE connected = true", Context),
