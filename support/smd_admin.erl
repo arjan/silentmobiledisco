@@ -30,7 +30,13 @@ ws_cast(broadcast, [{"message", Message}], _From, Context) ->
 ws_cast(disco_end, [], _From, Context) ->
     Ids = active_players(Context),
     m_config:set_value(silentmobiledisco, disco_ended, true, Context),
-    Song = hd(z_search:query_([{cat, audio}, {sort, "random"}], Context)),
+    Song = case m_config:get_value(silentmobiledisco, final_song, undefined, Context) of
+               undefined ->
+                   hd(z_search:query_([{cat, audio}, {sort, "random"}], Context));
+               S ->
+                   m_rsc:rid(z_convert:to_list(S), Context)
+           end,
+    lager:warning("Song: ~p", [Song]),
     lists:foreach(fun(Id) ->
                           m_disco_player:set_final_song(Id, Song, Context),
                           smd_disco:send_player_state(Id, Context)
